@@ -1,0 +1,11 @@
+﻿syntax = "proto3";
+package Proto;
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/field_mask.proto";
+import "Objects/dashboard.proto";
+
+service DashboardGrpc {
+	rpc CreateDashBoardMostSpenders (CreateDashboardUsageParkyCoinsRequest) returns (DashboardElements);
+    rpc CreateDashBoardWorstSpenders (CreateDashboardUsageParkyCoinsRequest) returns (DashboardElements);
+    rpc CreateDashBoardMidSpenders (CreateDashboardUsageParkyCoinsRequest) returns (DashboardElements);
+}

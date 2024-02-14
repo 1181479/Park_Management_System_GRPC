@@ -1,0 +1,10 @@
+﻿syntax = "proto3";
+package Proto;
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/field_mask.proto";
+import "Objects/payment.proto";
+
+service PaymentGrpc {
+    rpc AddPaymentMethod (CreatePaymentMethodRequest) returns (PaymentMethodResult);
+    rpc GetPaymentMethodListFromUser (GetPaymentMethodListRequest) returns (ListPaymentMethodResult);
+}

@@ -1,0 +1,56 @@
+﻿syntax = "proto3";
+package Proto;
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+message CreateCustomerRequest {
+    string Name = 1;
+    string Password = 2;
+    string Email = 3;
+    string Username = 4;
+    google.protobuf.FieldMask fieldMask = 5;
+}
+
+message GetCustomerRequest {
+    string Email = 1;
+    google.protobuf.FieldMask fieldMask = 2;
+}
+
+message CreateCustomerResult {
+    string Name = 1;
+    string Email = 2;
+    string Username = 3;
+    google.protobuf.FieldMask fieldMask = 4;
+}
+
+message GetCustomerResult {
+    string Name = 1;
+    string Email = 2;
+    string Username = 3;
+    google.protobuf.FieldMask fieldMask = 4;
+}
+
+message CheckUserRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message CheckUserResult {
+    bool isRegistered = 1;
+}
+
+message GetUserRequest {
+    string username = 1;
+}
+
+message ListCreateCustomerResult {
+    repeated CreateCustomerResult Customers = 1;
+}
+
+message GetUsersBeforeDateRequest {
+    google.protobuf.Timestamp expirationDate = 1;
+}
+
+message UsernameList {
+    repeated GetUserRequest usernames = 1;
+}

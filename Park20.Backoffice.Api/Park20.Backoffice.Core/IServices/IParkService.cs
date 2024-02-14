@@ -8,7 +8,7 @@ namespace Park20.Backoffice.Core.IServices
     {
         Task<bool?> GetVehicleTypeAvailable(string VehicleType, string ParkName);
         Task<bool?> GetAvailableSpace(string VehicleType, string ParkName);
-        Task<IEnumerable<Park>> GetAllParks();
+        IEnumerable<Park> GetAllParks();
         Task<IEnumerable<ParkDistanceResultDto>> GetAllParksWithDistance(double targetLatitude, double targetLongitude);
         Task<ParkingSpotCountDto> GetNumberParkingSpots(string parkName);
         Task<bool?> UpdatePriceTable(PriceTableDto priceTableDto);

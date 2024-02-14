@@ -1,0 +1,32 @@
+﻿syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+package Proto;
+
+message PaymentMethodResult {
+  int32 lastFourDigits =   1;
+  string fullName =   2;
+}
+
+message PaymentResult {
+  string token =  1;
+}
+
+message MakePaymentRequest {
+  string token =   1;
+  double amount =   2;
+}
+
+message CreatePaymentMethodRequest {
+  int32 lastFourDigits =   1;
+  google.protobuf.Timestamp expirationDate =   2;
+  string fullName =   3;
+  string token =   4;
+  string username =   5;
+}
+
+message HibridPayment {
+    double parkyCoinsAmount = 1;
+    double otherPaymentMethodAmount = 2;
+    double totalCost = 3;
+    bool isSuccessfull = 4;
+}

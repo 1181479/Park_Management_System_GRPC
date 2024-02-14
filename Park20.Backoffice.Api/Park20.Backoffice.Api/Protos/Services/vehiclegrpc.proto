@@ -1,0 +1,30 @@
+﻿syntax = "proto3";
+package Proto;
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/field_mask.proto";
+import "Objects/vehicle.proto";
+import "Objects/user.proto";
+import "Objects/payment.proto";
+import "Objects/park.proto";
+
+service VehicleGrpc {
+    rpc AddVehicle (CreateVehicleRequest) returns (VehicleResult);
+    rpc ParkCar (ParkingSpotsUpdateRequest) returns (ParkingSpotsUpdateResult);
+    rpc LeavePark (ParkingSpotsUpdateRequest) returns (HibridPayment);
+    rpc GetVehicleByLicencePlate (GetVehicleByLicencePlateRequest) returns (VehicleResult);
+    rpc GetVehicleListFromUser (GetVehicleListFromUserRequest) returns (VehicleResults);
+}
+
+message GetVehicleListFromUserRequest{
+    string name = 1;
+    google.protobuf.FieldMask fieldMask = 2;
+}
+
+message GetVehicleByLicencePlateRequest{
+    string licensePlate = 1;
+    google.protobuf.FieldMask fieldMask = 2;
+}
+
+message ParkingSpotsUpdateResult {
+    bool isSuccessful = 1;
+}

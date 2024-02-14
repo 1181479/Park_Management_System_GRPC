@@ -19,7 +19,7 @@ namespace Park20.Backoffice.Infrastructure
                 .AddTransient<IParkyWalletRepository, ParkyWalletRepository>()
                 .AddTransient<IParkyCoinsConfigurationRepository, ParkyCoinsConfigurationRepository>()
                 .AddTransient<IDashboardRepository, DashboardRepository>();
-                
+
         }
 
         public static void RegisterServices(this IServiceCollection services)

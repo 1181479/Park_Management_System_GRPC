@@ -1,6 +1,6 @@
 using Dapper;
 using Microsoft.OpenApi.Models;
-using Park20.Backoffice.Api.Graphql;
+using Park20.Backoffice.Api.Grpc;
 using Park20.Backoffice.Infrastructure;
 using System.Data.SqlClient;
 
@@ -21,38 +21,15 @@ catch (Exception e)
 builder.Services.RegisterServices();
 builder.Services.RegisterRepositories();
 
-builder.Services.AddControllers();
+builder.Services.AddGrpc();
+builder.Services.AddGrpcReflection();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddGrpcSwagger();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.AddSecurityDefinition("basic", new OpenApiSecurityScheme
-    {
-        Description = "api key.",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "basic"
-    });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "basic"
-                },
-                In = ParameterLocation.Header
-            },
-            new List<string>()
-        }
-    });
+    c.SwaggerDoc("v1",
+        new OpenApiInfo { Title = "Park20 APP", Version = "v1" });
 });
-
-builder.Services.AddGraphQLServer()
-    .AddQueryType<Query>()
-    .AddMutationType<Mutation>();
 
 var app = builder.Build();
 
@@ -60,14 +37,21 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Park20");
+    });
 }
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.MapGrpcService<VehicleGrpcService>();
+app.MapGrpcService<UserGrpcService>();
+app.MapGrpcService<PaymentGrpcService>();
+app.MapGrpcService<ParkyWalletGrpcService>();
+app.MapGrpcService<ParkGrpcService>();
+app.MapGrpcService<DashboardGrpcService>();
+app.MapGrpcReflectionService();
 app.UseCors();
-app.MapControllers();
-app.MapGraphQL("/graphql");
 
 app.Run();

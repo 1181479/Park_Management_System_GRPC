@@ -44,9 +44,9 @@ namespace Park20.Backoffice.Application.Services
             return parkingSpots.Any(spot => spot.VehicleType == Enum.Parse<VehicleType>(vehicleType) && spot.Status == false);
         }
 
-        public async Task<IEnumerable<Park>> GetAllParks()
+        public IEnumerable<Park> GetAllParks()
         {
-            var result = await _parkRepository.GetAllParks();
+            var result = _parkRepository.GetAllParks().Result;
             return result;
         }
 

@@ -1,0 +1,19 @@
+﻿syntax = "proto3";
+package Proto;
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/field_mask.proto";
+import "Objects/parky.proto";
+import "Objects/user.proto";
+
+service ParkyGrpc {
+    rpc BulkParky (UsernameList) returns (UpdateResult);
+    rpc UpdateBulkValue (AmountChange) returns (UpdateResult);
+    rpc UpdateNewCustomerValue (AmountChange) returns (UpdateResult);
+    rpc UpdateParkingValue (AmountChange) returns (UpdateResult);
+    rpc GetParkingPerHourValue (EmptyMessage) returns (AmountChange);
+    rpc GetRegistryValue (EmptyMessage) returns (AmountChange);
+    rpc GetBulkValue (EmptyMessage) returns (AmountChange);
+    rpc GetParkyWalletByUsername (GetUserRequest) returns (ParkyWallet);
+}
+
+message EmptyMessage{}

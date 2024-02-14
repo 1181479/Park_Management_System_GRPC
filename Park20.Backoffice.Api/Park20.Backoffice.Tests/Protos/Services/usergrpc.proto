@@ -1,0 +1,12 @@
+﻿syntax = "proto3";
+package Proto;
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/field_mask.proto";
+import "Objects/user.proto";
+
+service UserGrpc {
+    rpc AddCustomer (CreateCustomerRequest) returns (CreateCustomerResult);
+    rpc CheckIfUserIsRegistered (CheckUserRequest) returns (CheckUserResult);
+    rpc GetUserByUsername (GetUserRequest) returns (CreateCustomerResult);
+    rpc GetUsersBeforeDate (GetUsersBeforeDateRequest) returns (ListCreateCustomerResult);
+}

@@ -1,0 +1,23 @@
+﻿syntax = "proto3";
+package Proto;
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/field_mask.proto";
+import "Objects/park.proto";
+
+service ParkGrpc {
+	rpc UpdatePriceTable (PriceTable) returns (TaskResult);
+    rpc UpdateParkingSpotStatus (UpdateParkingSpotStatusRequest) returns (TaskResult);
+    rpc GetAvailableSpace (ParkCheckRequest) returns (TaskResult);
+    rpc GetVehicleTypeAvailable (ParkCheckRequest) returns (TaskResult);
+    rpc GetAllParks (EmptyRequest) returns (ListPark);
+    rpc GetParkingSpotsCount (GetInfoByParkName) returns (ParkingSpotCount);
+    rpc GetAllParksByDistance (GetAllParksByDistanceRequest) returns (ListParkDistanceResult);
+    rpc GetParkNames (EmptyRequest) returns (ListParkNames);
+    rpc GetParkingSpots (GetInfoByParkName) returns (ListParkingSpot);
+    rpc GetPriceTableByParkName (GetInfoByParkName) returns (GetPriceTable);
+}
+
+
+message EmptyRequest {
+ google.protobuf.FieldMask fieldMask = 1;
+}

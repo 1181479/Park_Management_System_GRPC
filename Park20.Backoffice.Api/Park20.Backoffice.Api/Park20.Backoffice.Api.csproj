@@ -1,20 +1,77 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <InvariantGlobalization>true</InvariantGlobalization>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<InvariantGlobalization>true</InvariantGlobalization>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="HotChocolate.AspNetCore" Version="13.8.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Grpc.AspNetCore" Version="2.60.0" />
+		<PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.60.0" />
+		<PackageReference Include="Grpc.Tools" Version="2.61.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.AspNetCore.Grpc.Swagger" Version="0.8.1" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Park20.Backoffice.Application\Park20.Backoffice.Application.csproj" />
-    <ProjectReference Include="..\Park20.Backoffice.Infrastructure\Park20.Backoffice.Infrastructure.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Park20.Backoffice.Application\Park20.Backoffice.Application.csproj" />
+		<ProjectReference Include="..\Park20.Backoffice.Infrastructure\Park20.Backoffice.Infrastructure.csproj" />
+	</ItemGroup>
 
+	<ItemGroup>
+		<Protobuf Include="Protos\Objects\dashboard.proto">
+			<ProtoRoot>Protos\</ProtoRoot>
+			<GrpcServices>Client</GrpcServices>
+		</Protobuf>
+		<Protobuf Include="Protos\Objects\park.proto">
+			<ProtoRoot>Protos\</ProtoRoot>
+			<GrpcServices>Client</GrpcServices>
+		</Protobuf>
+		<Protobuf Include="Protos\Objects\parky.proto">
+			<ProtoRoot>Protos\</ProtoRoot>
+			<GrpcServices>Client</GrpcServices>
+		</Protobuf>
+		<Protobuf Include="Protos\Objects\payment.proto">
+			<ProtoRoot>Protos\</ProtoRoot>
+			<GrpcServices>Client</GrpcServices>
+		</Protobuf>
+		<Protobuf Include="Protos\Objects\user.proto">
+			<ProtoRoot>Protos\</ProtoRoot>
+			<GrpcServices>Client</GrpcServices>
+		</Protobuf>
+		<Protobuf Include="Protos\Objects\vehicle.proto">
+			<ProtoRoot>Protos\</ProtoRoot>
+			<GrpcServices>Client</GrpcServices>
+		</Protobuf>
+		<Protobuf Include="Protos\Services\dashboardgrpc.proto">
+			<ProtoRoot>Protos\</ProtoRoot>
+			<GrpcServices>Server</GrpcServices>
+		</Protobuf>
+		<Protobuf Include="Protos\Services\parkgrpc.proto">
+			<ProtoRoot>Protos\</ProtoRoot>
+			<GrpcServices>Server</GrpcServices>
+		</Protobuf>
+		<Protobuf Include="Protos\Services\parkygrpc.proto">
+			<ProtoRoot>Protos\</ProtoRoot>
+			<GrpcServices>Server</GrpcServices>
+		</Protobuf>
+		<Protobuf Include="Protos\Services\paymentgrpc.proto">
+			<ProtoRoot>Protos\</ProtoRoot>
+			<GrpcServices>Server</GrpcServices>
+		</Protobuf>
+		<Protobuf Include="Protos\Services\usergrpc.proto">
+			<ProtoRoot>Protos\</ProtoRoot>
+			<GrpcServices>Server</GrpcServices>
+		</Protobuf>
+		<Protobuf Include="Protos\Services\vehiclegrpc.proto">
+			<ProtoRoot>Protos\</ProtoRoot>
+			<GrpcServices>Server</GrpcServices>
+		</Protobuf>
+
+	</ItemGroup>
 </Project>

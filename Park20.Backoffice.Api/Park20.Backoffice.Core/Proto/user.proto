@@ -1,0 +1,30 @@
+﻿syntax = "proto3";
+package Proto;
+import "google/protobuf/field_mask.proto";
+
+message CreateCustomerRequest {
+    string Name = 1;
+    string Password = 2;
+    string Email = 3;
+    string Username = 4;
+    google.protobuf.FieldMask fieldMask = 5;
+}
+
+message GetCustomerRequest {
+    string Email = 1;
+    google.protobuf.FieldMask fieldMask = 2;
+}
+
+message CreateCustomerResult {
+    string Name = 1;
+    string Email = 2;
+    string Username = 3;
+    google.protobuf.FieldMask fieldMask = 4;
+}
+
+message GetCustomerResult {
+    string Name = 1;
+    string Email = 2;
+    string Username = 3;
+    google.protobuf.FieldMask fieldMask = 4;
+}

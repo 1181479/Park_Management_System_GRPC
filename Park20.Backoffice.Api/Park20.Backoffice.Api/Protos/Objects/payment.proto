@@ -1,0 +1,46 @@
+﻿syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/field_mask.proto";
+package Proto;
+
+message PaymentMethodResult {
+  int32 lastFourDigits =   1;
+  string fullName =   2;
+  google.protobuf.FieldMask fieldMask = 3;
+}
+
+message PaymentResult {
+  string token =  1;
+}
+
+message MakePaymentRequest {
+  string token =   1;
+  double amount =   2;
+  google.protobuf.FieldMask fieldMask = 3;
+}
+
+message CreatePaymentMethodRequest {
+  int32 lastFourDigits =   1;
+  google.protobuf.Timestamp expirationDate =   2;
+  string fullName =   3;
+  string token =   4;
+  string username =   5;
+  google.protobuf.FieldMask fieldMask = 6;
+}
+
+message HibridPayment {
+    double parkyCoinsAmount = 1;
+    double otherPaymentMethodAmount = 2;
+    double totalCost = 3;
+    bool isSuccessfull = 4;
+    google.protobuf.FieldMask fieldMask = 5;
+}
+
+message GetPaymentMethodListRequest {
+    string username = 1;
+    google.protobuf.FieldMask fieldMask = 2;
+}
+
+message ListPaymentMethodResult {
+    repeated PaymentMethodResult listPaymentMethod = 1;
+}

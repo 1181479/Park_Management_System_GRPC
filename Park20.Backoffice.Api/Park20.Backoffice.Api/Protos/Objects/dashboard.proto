@@ -1,0 +1,27 @@
+﻿syntax = "proto3";
+package Proto;
+import "Objects/vehicle.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/field_mask.proto";
+
+message CreateDashboardUsageParkyCoinsRequest {
+    string parkName = 1;
+    google.protobuf.Timestamp initialDate = 2;
+    google.protobuf.Timestamp endDate = 3;
+    VehicleType vehicleType = 4;
+    int32 totalMinutes = 5;
+    google.protobuf.FieldMask fieldMask = 6;
+}
+
+message CreateDashboardUsageParkyCoinsResult {
+    repeated CustomerParkyCoinsSpentResult userParkyCoinsSpentResultDtos = 1;
+}
+
+message CustomerParkyCoinsSpentResult {
+    string Username = 1;
+    double ParkyCoinsSpent = 2;
+}
+
+message DashboardElements {
+    repeated CustomerParkyCoinsSpentResult elements = 1;
+}

@@ -109,7 +109,7 @@ namespace Park20.Backoffice.Tests
             var parkService = new ParkService(mockRepository.Object);
 
             // Act
-            var result = await parkService.GetAllParks();
+            var result = parkService.GetAllParks();
 
             // Assert
             Assert.AreEqual(expectedParks, result);
