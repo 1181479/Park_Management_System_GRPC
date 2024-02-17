@@ -7,12 +7,12 @@ import "Objects/user.proto";
 
 service ParkyGrpc {
     rpc BulkParky (UsernameList) returns (UpdateResult);
-    rpc UpdateBulkValue (AmountChange) returns (UpdateResult);
-    rpc UpdateNewCustomerValue (AmountChange) returns (UpdateResult);
-    rpc UpdateParkingValue (AmountChange) returns (UpdateResult);
-    rpc GetParkingPerHourValue (EmptyMessage) returns (AmountChange);
-    rpc GetRegistryValue (EmptyMessage) returns (AmountChange);
-    rpc GetBulkValue (EmptyMessage) returns (AmountChange);
+    rpc UpdateBulkValue (AmountChangeRequest) returns (UpdateResult);
+    rpc UpdateNewCustomerValue (AmountChangeRequest) returns (UpdateResult);
+    rpc UpdateParkingValue (AmountChangeRequest) returns (UpdateResult);
+    rpc GetParkingPerHourValue (EmptyMessage) returns (AmountChangeResult);
+    rpc GetRegistryValue (EmptyMessage) returns (AmountChangeResult);
+    rpc GetBulkValue (EmptyMessage) returns (AmountChangeResult);
     rpc GetParkyWalletByUsername (GetUserRequest) returns (ParkyWallet);
 }
 

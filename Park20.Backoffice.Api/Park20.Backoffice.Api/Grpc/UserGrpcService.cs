@@ -1,5 +1,6 @@
 ﻿using Grpc.Core;
 using Park20.Backoffice.Api.ProtoMap;
+using Park20.Backoffice.Core.Dtos.Requests;
 using Park20.Backoffice.Core.IServices;
 using Proto;
 
@@ -20,8 +21,10 @@ namespace Park20.Backoffice.Api.Grpc
             {
                 return Task.FromResult(new CreateCustomerResult { Email = "", Username = "", Name = "" });
             }
-            var result = _userService.GetUserByUsername(request.Username).Result;
-            return Task.FromResult(new CreateCustomerResult { Email = result.Email, Name = result.Name, Username = result.Username });
+            var result = _userService.AddCustomer(new CreateCustomerRequestDto(request.Name, request.Password, request.Email, request.Username)).Result;
+            CreateCustomerResult filteredUser = new();
+            request.FieldMask.Merge(Mapper.Map(result), filteredUser);
+            return Task.FromResult(filteredUser);
         }
 
         public override Task<CheckUserResult> CheckIfUserIsRegistered(CheckUserRequest request, ServerCallContext context)
@@ -35,12 +38,29 @@ namespace Park20.Backoffice.Api.Grpc
         public override Task<CreateCustomerResult> GetUserByUsername(GetUserRequest request, ServerCallContext context)
         {
             var result = _userService.GetUserByUsername(request.Username).Result;
-            return Task.FromResult(new CreateCustomerResult { Email = result.Email, Name = result.Name, Username = result.Username });
+            CreateCustomerResult filteredUser = new();
+            request.FieldMask.Merge(Mapper.Map(result), filteredUser);
+            return Task.FromResult(filteredUser);
         }
 
         public override Task<ListCreateCustomerResult> GetUsersBeforeDate(GetUsersBeforeDateRequest request, ServerCallContext context)
         {
-            return Mapper.Map(_userService.GetUsersBeforeDate(request.ExpirationDate.ToDateTime()).Result);
+            ListCreateCustomerResult lccr = Mapper.Map(_userService.GetUsersBeforeDate(request.ExpirationDate.ToDateTime()).Result);
+            ListCreateCustomerResult filteredList = new();
+            if (!request.FieldMask.ToString().Contains("Customers"))
+            {
+                foreach (CreateCustomerResult user in lccr.Customers)
+                {
+                    CreateCustomerResult filteredUser = new();
+                    request.FieldMask.Merge(user, filteredUser);
+                    filteredList.Customers.Add(filteredUser);
+                }
+            }
+            else
+            {
+                request.FieldMask.Merge(lccr, filteredList);
+            }
+            return Task.FromResult(filteredList);
         }
     }
 }

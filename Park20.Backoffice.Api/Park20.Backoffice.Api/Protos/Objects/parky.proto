@@ -14,9 +14,12 @@ message ParkyWallet {
   repeated ParkyWalletMovement movements =  2;
 }
 
-message AmountChange {
+message AmountChangeRequest {
 	int32 amount = 1;
-	google.protobuf.FieldMask fieldMask = 2;
+}
+
+message AmountChangeResult {
+	int32 amount = 1;
 }
 
 message UpdateResult {

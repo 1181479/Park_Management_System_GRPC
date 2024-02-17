@@ -10,7 +10,6 @@ message ParkDistanceResult {
   string location =  3;
   double longitude =  4;
   double latitude =  5;
-  google.protobuf.FieldMask fieldMask = 6;
 }
 
 message ParkingSpotCount {
@@ -18,7 +17,6 @@ message ParkingSpotCount {
   int32 gplCount =  2;
   int32 electricCount =  3;
   int32 automobileCount =  4;
-  google.protobuf.FieldMask fieldMask = 5;
 }
 
 message GetPriceTable {
@@ -26,7 +24,6 @@ message GetPriceTable {
   double nightFee =  2;
   google.protobuf.Timestamp initialDate =  3;
   repeated GetLinePriceTable priceLines =  4;
-  google.protobuf.FieldMask fieldMask = 5;
 }
 
 message GetLinePriceTable {
@@ -37,7 +34,6 @@ message GetPeriod {
   string initialTime =  1;
   string finalTime =  2;
   repeated GetFractions fractions =  3;
-  google.protobuf.FieldMask fieldMask = 4;
 }
 
 message GetFractions {
@@ -47,14 +43,12 @@ message GetFractions {
   double motorcyclePrice =  4;
   double gplPrice =  5;
   double electricPrice =  6;
-  google.protobuf.FieldMask fieldMask = 7;
 }
 
 message CreateParkLogResult {
   string licencePlate =   1;
   string parkName =   2;
   google.protobuf.Timestamp startingTime =   3;
-  google.protobuf.FieldMask fieldMask = 4;
 }
 
 message UpdateParkingSpotStatusRequest {
@@ -81,19 +75,16 @@ message PriceTable {
   double nightFee =   2;
   google.protobuf.Timestamp initialDate =   3;
   repeated LinePriceTable priceLines =   4;
-  google.protobuf.FieldMask fieldMask = 5;
 }
 
 message LinePriceTable {
   Period period =   1;
-  google.protobuf.FieldMask fieldMask = 2;
 }
 
 message Period {
   google.protobuf.Timestamp initialTime =   1;
   google.protobuf.Timestamp finalTime =   2;
   repeated Fractions fractionList =   3;
-  google.protobuf.FieldMask fieldMask = 4;
 }
 
 message Fractions {
@@ -101,7 +92,6 @@ message Fractions {
   int32 minutes =   2;
   VehicleType vehicleType =   3;
   double price =   4;
-  google.protobuf.FieldMask fieldMask = 5;
 }
 
 message TaskResult {
@@ -130,7 +120,6 @@ message Park {
     double nightFee = 10;
     PriceTable priceTable = 11;
     repeated ParkingSpot parkingSpots = 12;
-    google.protobuf.FieldMask fieldMask = 13;
 }
 
 message ParkingSpot {
@@ -145,7 +134,7 @@ message ListPark {
 }
 
 message ListParkingSpot {
-	repeated ParkingSpot parks = 1;
+	repeated ParkingSpot parkingSpots = 1;
 }
 
 message ListParkDistanceResult {

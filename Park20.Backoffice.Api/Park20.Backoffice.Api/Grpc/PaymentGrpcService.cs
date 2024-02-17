@@ -19,12 +19,30 @@ namespace Park20.Backoffice.Api.Grpc
         public override Task<PaymentMethodResult> AddPaymentMethod(CreatePaymentMethodRequest request, ServerCallContext context)
         {
             PaymentMethodResultDto resultDto = _paymentService.AddPaymentMethodToUser(Mapper.Map(request)).Result;
-            return Task.FromResult(new PaymentMethodResult { FullName = resultDto.FullName, LastFourDigits = resultDto.LastFourDigits });
+            PaymentMethodResult pmr = new PaymentMethodResult { FullName = resultDto.FullName, LastFourDigits = resultDto.LastFourDigits };
+            PaymentMethodResult filteredPmr = new PaymentMethodResult();
+            request.FieldMask.Merge(pmr, filteredPmr);
+            return Task.FromResult(filteredPmr);
         }
 
         public override Task<ListPaymentMethodResult> GetPaymentMethodListFromUser(GetPaymentMethodListRequest request, ServerCallContext context)
         {
-            return Mapper.Map(_paymentService.GetPaymentMethodListFromUser(request.Username).Result);
+            ListPaymentMethodResult lpmr = Mapper.Map(_paymentService.GetPaymentMethodListFromUser(request.Username).Result);
+            ListPaymentMethodResult lfilteredPmr = new();
+            if (!request.FieldMask.ToString().Contains("listPaymentMethod"))
+            {
+                foreach (PaymentMethodResult pmr in lpmr.ListPaymentMethod)
+                {
+                    PaymentMethodResult filteredPmr = new();
+                    request.FieldMask.Merge(pmr, filteredPmr);
+                    lfilteredPmr.ListPaymentMethod.Add(filteredPmr);
+                }
+            }
+            else
+            {
+                request.FieldMask.Merge(lpmr, lfilteredPmr);
+            }
+            return Task.FromResult(lfilteredPmr);
         }
     }
 }

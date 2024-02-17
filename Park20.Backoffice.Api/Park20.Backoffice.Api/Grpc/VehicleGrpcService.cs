@@ -1,5 +1,6 @@
 ﻿using Grpc.Core;
 using Park20.Backoffice.Api.ProtoMap;
+using Park20.Backoffice.Core.Domain;
 using Park20.Backoffice.Core.Dtos.Requests;
 using Park20.Backoffice.Core.Dtos.Results;
 using Park20.Backoffice.Core.IServices;
@@ -23,7 +24,10 @@ namespace Park20.Backoffice.Api.Grpc
 
         public override Task<VehicleResult> AddVehicle(CreateVehicleRequest request, ServerCallContext context)
         {
-            return Task.FromResult(Mapper.Map(_vehicleService.AddVehicleToUser(Mapper.Map(request)).Result));
+            VehicleResult vr = Mapper.Map(_vehicleService.AddVehicleToUser(Mapper.Map(request)).Result);
+            VehicleResult filteredVehicle = new();
+            request.FieldMask.Merge(vr, filteredVehicle);
+            return Task.FromResult(filteredVehicle);
         }
 
         public override Task<ParkingSpotsUpdateResult> ParkCar(ParkingSpotsUpdateRequest request, ServerCallContext context)
@@ -32,7 +36,7 @@ namespace Park20.Backoffice.Api.Grpc
             return Task.FromResult(new ParkingSpotsUpdateResult { IsSuccessful = _parkLogService.UpdateAvailableParkingSpots(request.ParkName, request.LicensePlate, request.IsEntrance).Result });
         }
 
-        public override Task<HibridPayment> LeavePark(ParkingSpotsUpdateRequest request, ServerCallContext context)
+        public override Task<Proto.HibridPayment> LeavePark(ParkingSpotsUpdateRequest request, ServerCallContext context)
         {
             _parkLogService.StopCountingTimeOperation(request.LicensePlate, request.ParkName);
 
@@ -41,23 +45,43 @@ namespace Park20.Backoffice.Api.Grpc
             var payment = _paymentService.MakePayment(request.LicensePlate, totalCost).Result;
 
             _parkLogService.UpdateAvailableParkingSpots(request.ParkName, request.LicensePlate, request.IsEntrance);
-            return Task.FromResult(new HibridPayment
+            Proto.HibridPayment hp = new();
+            request.FieldMask.Merge(new Proto.HibridPayment
             {
                 IsSuccessfull = payment.isSuccessfull,
                 OtherPaymentMethodAmount = ((double)payment.otherPaymentMethodAmount),
                 ParkyCoinsAmount = ((double)payment.parkyCoinsAmount),
                 TotalCost = ((double)payment.totalCost)
-            });
+            }, hp);
+            return Task.FromResult(hp);
         }
 
         public override Task<VehicleResult> GetVehicleByLicencePlate(GetVehicleByLicencePlateRequest request, ServerCallContext context)
         {
-            return Task.FromResult(Mapper.Map(_vehicleService.GetVehicle(request.LicensePlate).Result));
+            VehicleResult vr = Mapper.Map(_vehicleService.GetVehicle(request.LicensePlate).Result);
+            VehicleResult filteredVehicle = new();
+            request.FieldMask.Merge(vr, filteredVehicle);
+            return Task.FromResult(filteredVehicle);
         }
 
         public override Task<VehicleResults> GetVehicleListFromUser(GetVehicleListFromUserRequest request, ServerCallContext context)
         {
-            return Task.FromResult(Mapper.MapResults(_vehicleService.GetVehicleListFromUser(request.Name).Result.ToList()));
+            VehicleResults lvr = Mapper.MapResults(_vehicleService.GetVehicleListFromUser(request.Name).Result.ToList());
+            VehicleResults filteredVR = new();
+            if (!request.FieldMask.ToString().Contains("vehicles"))
+            {
+                foreach (var vehicle in lvr.Vehicles)
+                {
+                    VehicleResult filteredVehicle = new();
+                    request.FieldMask.Merge(vehicle, filteredVehicle);
+                    filteredVR.Vehicles.Add(filteredVehicle);
+                }
+            }
+            else
+            {
+                request.FieldMask.Merge(lvr, filteredVR);
+            }
+            return Task.FromResult(filteredVR);
         }
     }
 }

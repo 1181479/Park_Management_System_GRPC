@@ -15,12 +15,12 @@ service VehicleGrpc {
     rpc GetVehicleListFromUser (GetVehicleListFromUserRequest) returns (VehicleResults);
 }
 
-message GetVehicleListFromUserRequest{
+message GetVehicleListFromUserRequest {
     string name = 1;
     google.protobuf.FieldMask fieldMask = 2;
 }
 
-message GetVehicleByLicencePlateRequest{
+message GetVehicleByLicencePlateRequest {
     string licensePlate = 1;
     google.protobuf.FieldMask fieldMask = 2;
 }

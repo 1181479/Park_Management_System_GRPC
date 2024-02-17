@@ -1,5 +1,6 @@
 ﻿using Grpc.Core;
 using Park20.Backoffice.Api.ProtoMap;
+using Park20.Backoffice.Application.Mappers;
 using Park20.Backoffice.Core.IServices;
 using Proto;
 
@@ -22,7 +23,7 @@ namespace Park20.Backoffice.Api.Grpc
             });
         }
 
-        public override Task<UpdateResult> UpdateBulkValue(AmountChange request, ServerCallContext context)
+        public override Task<UpdateResult> UpdateBulkValue(AmountChangeRequest request, ServerCallContext context)
         {
             return Task.FromResult(new UpdateResult
             {
@@ -30,7 +31,7 @@ namespace Park20.Backoffice.Api.Grpc
             });
         }
 
-        public override Task<UpdateResult> UpdateNewCustomerValue(AmountChange request, ServerCallContext context)
+        public override Task<UpdateResult> UpdateNewCustomerValue(AmountChangeRequest request, ServerCallContext context)
         {
             return Task.FromResult(new UpdateResult
             {
@@ -38,7 +39,7 @@ namespace Park20.Backoffice.Api.Grpc
             });
         }
 
-        public override Task<UpdateResult> UpdateParkingValue(AmountChange request, ServerCallContext context)
+        public override Task<UpdateResult> UpdateParkingValue(AmountChangeRequest request, ServerCallContext context)
         {
             return Task.FromResult(new UpdateResult
             {
@@ -46,24 +47,27 @@ namespace Park20.Backoffice.Api.Grpc
             });
         }
 
-        public override Task<AmountChange> GetParkingPerHourValue(EmptyMessage request, ServerCallContext context)
+        public override Task<AmountChangeResult> GetParkingPerHourValue(EmptyMessage request, ServerCallContext context)
         {
-            return Task.FromResult(new AmountChange { Amount = _parkyWalletService.GetParkingValueAsync().Result });
+            return Task.FromResult(new AmountChangeResult { Amount = _parkyWalletService.GetParkingValueAsync().Result });
         }
 
-        public override Task<AmountChange> GetRegistryValue(EmptyMessage request, ServerCallContext context)
+        public override Task<AmountChangeResult> GetRegistryValue(EmptyMessage request, ServerCallContext context)
         {
-            return Task.FromResult(new AmountChange { Amount = _parkyWalletService.GetRegestryValue().Result });
+            return Task.FromResult(new AmountChangeResult { Amount = _parkyWalletService.GetRegestryValue().Result });
         }
 
-        public override Task<AmountChange> GetBulkValue(EmptyMessage request, ServerCallContext context)
+        public override Task<AmountChangeResult> GetBulkValue(EmptyMessage request, ServerCallContext context)
         {
-            return Task.FromResult(new AmountChange { Amount = _parkyWalletService.GetBulkValue().Result });
+            return Task.FromResult(new AmountChangeResult { Amount = _parkyWalletService.GetBulkValue().Result });
         }
 
         public override Task<ParkyWallet> GetParkyWalletByUsername(GetUserRequest request, ServerCallContext context)
         {
-            return Mapper.Map(_parkyWalletService.GetParkyWalletByUsername(request.Username).Result);
+            ParkyWallet pw = Mapper.Map(_parkyWalletService.GetParkyWalletByUsername(request.Username).Result);
+            ParkyWallet filteredPW = new();
+            request.FieldMask.Merge(pw, filteredPW);
+            return Task.FromResult(filteredPW);
         }
     }
 }

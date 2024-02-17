@@ -1,4 +1,5 @@
-﻿using Google.Protobuf.Collections;
+﻿using Google.Protobuf;
+using Google.Protobuf.Collections;
 using Google.Protobuf.WellKnownTypes;
 using Park20.Backoffice.Core.Domain;
 using Park20.Backoffice.Core.Domain.Park;
@@ -120,17 +121,17 @@ namespace Park20.Backoffice.Api.ProtoMap
             };
         }
 
-        public static Task<ListParkDistanceResult> Map(List<ParkDistanceResultDto> dto)
+        public static ListParkDistanceResult Map(List<ParkDistanceResultDto> dto)
         {
             List<ParkDistanceResult> distance = [];
             dto.ForEach(d =>
             {
                 distance.Add(Map(d));
             });
-            return Task.FromResult(new ListParkDistanceResult
+            return new ListParkDistanceResult
             {
                 ParkDistance = { distance }
-            });
+            };
         }
 
         public static ParkDistanceResult Map(ParkDistanceResultDto dto)
@@ -144,15 +145,15 @@ namespace Park20.Backoffice.Api.ProtoMap
                 ParkName = dto.ParkName
             };
         }
-        public static Task<GetPriceTable> Map(GetPriceTableDto dto)
+        public static GetPriceTable Map(GetPriceTableDto dto)
         {
-            return Task.FromResult(new GetPriceTable
+            return new GetPriceTable
             {
                 InitialDate = Timestamp.FromDateTime(dto.InitialDate.ToUniversalTime()),
                 NightFee = dto.NightFee,
                 ParkName = dto.ParkName,
-                PriceLines = { Map(dto.PriceLines) },
-            });
+                PriceLines = { Map(dto.PriceLines) }
+            };
         }
 
         public static List<GetLinePriceTable> Map(List<GetPriceTableDto.GetLinePriceTableDto> lpt)
@@ -261,9 +262,9 @@ namespace Park20.Backoffice.Api.ProtoMap
             };
         }
 
-        public static Task<ParkyWallet> Map(ParkyWalletDto pwd)
+        public static ParkyWallet Map(ParkyWalletDto pwd)
         {
-            return Task.FromResult(new ParkyWallet { CurrentBalance = pwd.CurrentBalance, Movements = { Map(pwd.Movements) } });
+            return new ParkyWallet { CurrentBalance = pwd.CurrentBalance, Movements = { Map(pwd.Movements) } };
         }
 
         public static List<ParkyWalletMovement> Map(List<ParkyWalletMovementDto> lpwmd)
@@ -286,12 +287,12 @@ namespace Park20.Backoffice.Api.ProtoMap
             };
         }
 
-        public static Task<ListPaymentMethodResult> Map(IEnumerable<PaymentMethodResultDto> lpaymentMethodResultDto)
+        public static ListPaymentMethodResult Map(IEnumerable<PaymentMethodResultDto> lpaymentMethodResultDto)
         {
-            return Task.FromResult(new ListPaymentMethodResult
+            return new ListPaymentMethodResult
             {
                 ListPaymentMethod = { Map(lpaymentMethodResultDto.ToList()) }
-            });
+            };
         }
 
         public static List<PaymentMethodResult> Map(List<PaymentMethodResultDto> lpaymentMethodResultDto)
@@ -318,12 +319,12 @@ namespace Park20.Backoffice.Api.ProtoMap
             return new CreatePaymentMethodRequestDto(request.LastFourDigits, request.ExpirationDate.ToDateTime(), request.FullName, request.Token, request.Username);
         }
 
-        internal static Task<ListCreateCustomerResult> Map(List<CreateCustomerResultDto> result)
+        internal static ListCreateCustomerResult Map(List<CreateCustomerResultDto> result)
         {
-            return Task.FromResult(new ListCreateCustomerResult
+            return new ListCreateCustomerResult
             {
                 Customers = { MapCustomers(result.ToList()) }
-            });
+            };
         }
 
         internal static List<CreateCustomerResult> MapCustomers(List<CreateCustomerResultDto> result)

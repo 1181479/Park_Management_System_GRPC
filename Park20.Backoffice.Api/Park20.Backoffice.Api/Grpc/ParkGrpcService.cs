@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Park20.Backoffice.Api.ProtoMap;
+using Park20.Backoffice.Core.Domain.Park;
 using Park20.Backoffice.Core.Dtos.Results;
 using Park20.Backoffice.Core.IServices;
 using Proto;
@@ -22,8 +23,20 @@ namespace Park20.Backoffice.Api.Grpc
         {
             ListPark filteredParks = new();
             ListPark parks = Mapper.Map(_parkService.GetAllParks().ToList());
-            request.FieldMask.Merge(parks, filteredParks);
-            return Task.FromResult(parks);
+            if (!request.FieldMask.ToString().Contains("parks"))
+            {
+                foreach (var park in parks.Parks)
+                {
+                    Proto.Park filteredPark = new Proto.Park();
+                    request.FieldMask.Merge(park, filteredPark);
+                    filteredParks.Parks.Add(filteredPark);
+                }
+            }
+            else
+            {
+                request.FieldMask.Merge(parks, filteredParks);
+            }
+            return Task.FromResult(filteredParks);
         }
 
         public override Task<TaskResult> UpdatePriceTable(Proto.PriceTable request, ServerCallContext context)
@@ -76,18 +89,35 @@ namespace Park20.Backoffice.Api.Grpc
         public override Task<ParkingSpotCount> GetParkingSpotsCount(GetInfoByParkName request, ServerCallContext context)
         {
             ParkingSpotCountDto dto = _parkService.GetNumberParkingSpots(request.ParkName).Result;
-            return Task.FromResult(new ParkingSpotCount
+            ParkingSpotCount filteredCount = new ParkingSpotCount();
+            request.FieldMask.Merge(new ParkingSpotCount
             {
                 AutomobileCount = dto.AutomobileCount,
                 ElectricCount = dto.ElectricCount,
                 GplCount = dto.GPLCount,
                 MotocycleCount = dto.MotocycleCount
-            });
+            }, filteredCount);
+            return Task.FromResult(filteredCount);
         }
 
         public override Task<ListParkDistanceResult> GetAllParksByDistance(GetAllParksByDistanceRequest request, ServerCallContext context)
         {
-            return Mapper.Map(_parkService.GetAllParksWithDistance(request.Latitude, request.Longitude).Result.ToList());
+            ListParkDistanceResult lDistance = Mapper.Map(_parkService.GetAllParksWithDistance(request.Latitude, request.Longitude).Result.ToList());
+            ListParkDistanceResult filteredDistances = new ListParkDistanceResult();
+            if (!request.FieldMask.ToString().Contains("parkDistance"))
+            {
+                foreach (var distance in lDistance.ParkDistance)
+                {
+                    ParkDistanceResult filteredDistance = new ParkDistanceResult();
+                    request.FieldMask.Merge(distance, filteredDistance);
+                    filteredDistances.ParkDistance.Add(filteredDistance);
+                }
+            }
+            else
+            {
+                request.FieldMask.Merge(lDistance, filteredDistances);
+            }
+            return Task.FromResult(filteredDistances);
         }
 
         public override Task<ListParkNames> GetParkNames(EmptyRequest request, ServerCallContext context)
@@ -97,12 +127,30 @@ namespace Park20.Backoffice.Api.Grpc
 
         public override Task<ListParkingSpot> GetParkingSpots(GetInfoByParkName request, ServerCallContext context)
         {
-            return Task.FromResult(new ListParkingSpot { Parks = { Mapper.Map(_parkService.GetParkingSpots(request.ParkName).Result) } });
+            ListParkingSpot lPS = new ListParkingSpot { ParkingSpots = { Mapper.Map(_parkService.GetParkingSpots(request.ParkName).Result) } };
+            ListParkingSpot lfilteredPS = new ListParkingSpot();
+            if (!request.FieldMask.ToString().Contains("parkingSpots"))
+            {
+                foreach (var ps in lPS.ParkingSpots)
+                {
+                    Proto.ParkingSpot filteredPS = new Proto.ParkingSpot();
+                    request.FieldMask.Merge(ps, filteredPS);
+                    lfilteredPS.ParkingSpots.Add(filteredPS);
+                }
+            }
+            else
+            {
+                request.FieldMask.Merge(lPS, lfilteredPS);
+            }
+            return Task.FromResult(lfilteredPS);
         }
 
         public override Task<GetPriceTable> GetPriceTableByParkName(GetInfoByParkName request, ServerCallContext context)
         {
-            return Mapper.Map(_parkService.GetPriceTableByParkName(request.ParkName).Result);
+            GetPriceTable pt = Mapper.Map(_parkService.GetPriceTableByParkName(request.ParkName).Result);
+            GetPriceTable filteredPT = new GetPriceTable();
+            request.FieldMask.Merge(pt, filteredPT);
+            return Task.FromResult(filteredPT);
         }
     }
 }

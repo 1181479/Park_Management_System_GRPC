@@ -33,7 +33,6 @@ message HibridPayment {
     double otherPaymentMethodAmount = 2;
     double totalCost = 3;
     bool isSuccessfull = 4;
-    google.protobuf.FieldMask fieldMask = 5;
 }
 
 message GetPaymentMethodListRequest {
