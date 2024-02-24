@@ -14,7 +14,7 @@ service ParkGrpc {
     rpc GetAllParksByDistance (GetAllParksByDistanceRequest) returns (ListParkDistanceResult);
     rpc GetParkNames (EmptyRequest) returns (ListParkNames);
     rpc GetParkingSpots (GetInfoByParkName) returns (ListParkingSpot);
-    rpc GetPriceTableByParkName (GetInfoByParkName) returns (GetPriceTable);
+    rpc GetPriceTableByParkName (GetInfoByParkName) returns (PriceTable);
 }
 
 

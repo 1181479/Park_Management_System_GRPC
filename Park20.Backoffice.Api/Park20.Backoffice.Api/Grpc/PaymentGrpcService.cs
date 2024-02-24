@@ -1,7 +1,6 @@
 ﻿using Grpc.Core;
 using Park20.Backoffice.Api.ProtoMap;
-using Park20.Backoffice.Core.Dtos.Requests;
-using Park20.Backoffice.Core.Dtos.Results;
+using Park20.Backoffice.Core.Domain.User;
 using Park20.Backoffice.Core.IServices;
 using Proto;
 
@@ -18,8 +17,7 @@ namespace Park20.Backoffice.Api.Grpc
 
         public override Task<PaymentMethodResult> AddPaymentMethod(CreatePaymentMethodRequest request, ServerCallContext context)
         {
-            PaymentMethodResultDto resultDto = _paymentService.AddPaymentMethodToUser(Mapper.Map(request)).Result;
-            PaymentMethodResult pmr = new PaymentMethodResult { FullName = resultDto.FullName, LastFourDigits = resultDto.LastFourDigits };
+            PaymentMethodResult pmr = Mapper.Map(_paymentService.AddPaymentMethodToUser(Mapper.Map(request), request.Username).Result);
             PaymentMethodResult filteredPmr = new PaymentMethodResult();
             request.FieldMask.Merge(pmr, filteredPmr);
             return Task.FromResult(filteredPmr);

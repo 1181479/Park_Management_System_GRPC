@@ -1,6 +1,4 @@
 ﻿using Park20.Backoffice.Core.Domain.Park;
-using Park20.Backoffice.Core.Dtos.Requests;
-using Park20.Backoffice.Core.Dtos.Results;
 
 namespace Park20.Backoffice.Core.IServices
 {
@@ -9,13 +7,15 @@ namespace Park20.Backoffice.Core.IServices
         Task<bool?> GetVehicleTypeAvailable(string VehicleType, string ParkName);
         Task<bool?> GetAvailableSpace(string VehicleType, string ParkName);
         IEnumerable<Park> GetAllParks();
-        Task<IEnumerable<ParkDistanceResultDto>> GetAllParksWithDistance(double targetLatitude, double targetLongitude);
-        Task<ParkingSpotCountDto> GetNumberParkingSpots(string parkName);
-        Task<bool?> UpdatePriceTable(PriceTableDto priceTableDto);
+        Task<IEnumerable<Park>> GetAllParksWithDistance();
+        Task<List<ParkingSpot>> GetNumberParkingSpots(string parkName);
+        Task<bool?> UpdatePriceTable(Park priceTableDto);
         Task<List<string>> GetParkNames();
         Task<List<ParkingSpot>> GetParkingSpots(string parkName);
         Task<bool> UpdateParkingSpotStatus(bool status, int parkingSpotId);
-        Task<GetPriceTableDto> GetPriceTableByParkName(string parkName);
+        Task<Park> GetPriceTableByParkName(string parkName);
+
+        public double CalculateDistanceBetweenCoordinates(double lat1, double lon1, double lat2, double lon2);
 
     }
 }

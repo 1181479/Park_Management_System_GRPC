@@ -1,15 +1,7 @@
-﻿using Park20.Backoffice.Application.Mappers;
-using Park20.Backoffice.Core.Domain;
+﻿using Park20.Backoffice.Core.Domain;
 using Park20.Backoffice.Core.Domain.Park;
-using Park20.Backoffice.Core.Dtos.Requests;
-using Park20.Backoffice.Core.Dtos.Results;
 using Park20.Backoffice.Core.IRepositories;
 using Park20.Backoffice.Core.IServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Park20.Backoffice.Application.Services
 {
@@ -50,60 +42,18 @@ namespace Park20.Backoffice.Application.Services
             return result;
         }
 
-        public async Task<IEnumerable<ParkDistanceResultDto>> GetAllParksWithDistance(double targetLatitude, double targetLongitude)
+        public async Task<IEnumerable<Park>> GetAllParksWithDistance()
         {
-            var parks = await _parkRepository.GetAllParks();
-
-            // Calcula a distância de cada parque à localização alvo
-            var parksWithDistance = parks.Select(park =>
-            {
-                double distance = CalculateDistanceBetweenCoordinates(
-                    park.Latitude, park.Longitude, targetLatitude, targetLongitude);
-
-                return new ParkDistanceResultDto
-                {
-                    ParkName = park.ParkName,
-                    DistanceToTarget = distance,
-                    Location = park.Location,
-                    Latitude = park.Latitude,
-                    Longitude = park.Longitude,
-
-                };
-            });
-
-            return parksWithDistance;
+            return await _parkRepository.GetAllParks();
         }
 
-        public async Task<ParkingSpotCountDto> GetNumberParkingSpots(string parkName)
+        public async Task<List<ParkingSpot>> GetNumberParkingSpots(string parkName)
         {
-            List<ParkingSpot> parkingSpots = await _parkRepository.GetParkingSpotsAvailableByParkName(parkName);
-
-            ParkingSpotCountDto counts = new ParkingSpotCountDto();
-
-            foreach (var parkingSpot in parkingSpots)
-            {
-                switch (parkingSpot.VehicleType)
-                {
-                    case VehicleType.Motocycle:
-                        counts.MotocycleCount++;
-                        break;
-                    case VehicleType.GPL:
-                        counts.GPLCount++;
-                        break;
-                    case VehicleType.Electric:
-                        counts.ElectricCount++;
-                        break;
-                    case VehicleType.Automobile:
-                        counts.AutomobileCount++;
-                        break;
-                }
-            }
-
-            return counts;
+            return await _parkRepository.GetParkingSpotsAvailableByParkName(parkName);
         }
 
 
-        private double CalculateDistanceBetweenCoordinates(double lat1, double lon1, double lat2, double lon2)
+        public double CalculateDistanceBetweenCoordinates(double lat1, double lon1, double lat2, double lon2)
         {
 
             // Converte as coordenadas para radianos
@@ -134,9 +84,9 @@ namespace Park20.Backoffice.Application.Services
             return degrees * Math.PI / 180.0;
         }
 
-        public async Task<bool?> UpdatePriceTable(PriceTableDto priceTableDto)
+        public async Task<bool?> UpdatePriceTable(Park park)
         {
-            return await _parkRepository.UpdateParkPriceTable(priceTableDto.ParkName, priceTableDto.NightFee, ParkMapper.ToPriceTableDomain(priceTableDto));
+            return await _parkRepository.UpdateParkPriceTable(park.ParkName, park.NightFee, park.PriceTable);
         }
 
         public async Task<List<string>> GetParkNames()
@@ -154,13 +104,9 @@ namespace Park20.Backoffice.Application.Services
             return await this._parkRepository.UpdateParkingSpotStatus(status, parkingSpotId);
         }
 
-        public async Task<GetPriceTableDto> GetPriceTableByParkName(string parkName)
+        public async Task<Park> GetPriceTableByParkName(string parkName)
         {
-            var park = await _parkRepository.GetParkByName(parkName);
-
-            PriceTable priceTable = park.PriceTable;
-
-            return ParkMapper.ToPriceTableDto(park,priceTable);
+            return await _parkRepository.GetParkByName(parkName);
         }
     }
 }

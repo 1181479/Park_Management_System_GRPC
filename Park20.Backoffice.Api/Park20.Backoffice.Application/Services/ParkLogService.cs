@@ -1,6 +1,5 @@
-﻿using Park20.Backoffice.Application.Mappers;
-using Park20.Backoffice.Core.Domain;
-using Park20.Backoffice.Core.Dtos.Requests;
+﻿using Park20.Backoffice.Core.Domain;
+using Park20.Backoffice.Core.Domain.Park;
 using Park20.Backoffice.Core.IRepositories;
 using Park20.Backoffice.Core.IServices;
 
@@ -10,31 +9,29 @@ namespace Park20.Backoffice.Application.Services
     {
         private readonly IParkLogRepository _parkLogRepository = parkLogRepository;
 
-        public async Task StartingCountingTimeOperation(string licensePlate, string parkName)
+        public async Task StartingCountingTimeOperation(ParkLog park)
         {
             var startingTime = DateTime.UtcNow;
 
-            await CreateParkLog(licensePlate, parkName, startingTime);
+            await CreateParkLog(park, startingTime);
         }
 
-        private async Task CreateParkLog(string licensePlate, string parkName, DateTime startingTime)
+        private async Task CreateParkLog(ParkLog park, DateTime startingTime)
         {
-            await _parkLogRepository.CreateParkLog(ParkLogMapper.ToParkLogDomain(licensePlate, parkName), startingTime);
+            await _parkLogRepository.CreateParkLog(park, startingTime);
         }
 
-        public async Task StopCountingTimeOperation(string licensePlate, string parkName)
+        public async Task StopCountingTimeOperation(ParkLog park)
         {
             var endingTime = DateTime.UtcNow;
-            await ManageParkLog(licensePlate, parkName, endingTime);
+            await ManageParkLog(park, endingTime);
         }
 
-        private async Task ManageParkLog(string licensePlate, string parkName, DateTime endingTime)
+        private async Task ManageParkLog(ParkLog park, DateTime endingTime)
         {
-            var parkLog = ParkLogMapper.ToParkLogDomain(licensePlate, parkName);
+            park.EndTime = endingTime;
 
-            parkLog.EndTime = endingTime;
-
-            var isUpdated = await _parkLogRepository.UpdateParkLogWithEndingTime(parkLog);
+            var isUpdated = await _parkLogRepository.UpdateParkLogWithEndingTime(park);
 
         }
 

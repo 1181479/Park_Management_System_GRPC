@@ -1,15 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Park20.Backoffice.Core.Domain.Payment;
 using Park20.Backoffice.Core.IRepositories;
 using Park20.Backoffice.DatabaseManagement.Sql.Queries;
 using System.Data.SqlClient;
 using System.Data;
 using Dapper;
 using Park20.Backoffice.Core.Domain.User;
-using Park20.Backoffice.Core.Domain;
-using Park20.Backoffice.Core.Domain;
-using Park20.Backoffice.Core.Dtos.Requests;
-using Park20.Backoffice.Core.Domain.Park;
 
 namespace Park20.Backoffice.Infrastructure.Repositories
 {

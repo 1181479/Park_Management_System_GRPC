@@ -1,11 +1,7 @@
 ﻿using Grpc.Core;
 using Park20.Backoffice.Api.ProtoMap;
-using Park20.Backoffice.Core.Domain;
-using Park20.Backoffice.Core.Dtos.Requests;
-using Park20.Backoffice.Core.Dtos.Results;
 using Park20.Backoffice.Core.IServices;
 using Proto;
-using System.ComponentModel;
 
 namespace Park20.Backoffice.Api.Grpc
 {
@@ -24,7 +20,7 @@ namespace Park20.Backoffice.Api.Grpc
 
         public override Task<VehicleResult> AddVehicle(CreateVehicleRequest request, ServerCallContext context)
         {
-            VehicleResult vr = Mapper.Map(_vehicleService.AddVehicleToUser(Mapper.Map(request)).Result);
+            VehicleResult vr = Mapper.Map(_vehicleService.AddVehicleToUser(Mapper.Map(request), request.Username).Result);
             VehicleResult filteredVehicle = new();
             request.FieldMask.Merge(vr, filteredVehicle);
             return Task.FromResult(filteredVehicle);
@@ -32,13 +28,13 @@ namespace Park20.Backoffice.Api.Grpc
 
         public override Task<ParkingSpotsUpdateResult> ParkCar(ParkingSpotsUpdateRequest request, ServerCallContext context)
         {
-            _parkLogService.StartingCountingTimeOperation(request.LicensePlate, request.ParkName);
+            _parkLogService.StartingCountingTimeOperation(Mapper.Map(request.LicensePlate, request.ParkName));
             return Task.FromResult(new ParkingSpotsUpdateResult { IsSuccessful = _parkLogService.UpdateAvailableParkingSpots(request.ParkName, request.LicensePlate, request.IsEntrance).Result });
         }
 
         public override Task<Proto.HibridPayment> LeavePark(ParkingSpotsUpdateRequest request, ServerCallContext context)
         {
-            _parkLogService.StopCountingTimeOperation(request.LicensePlate, request.ParkName);
+            _parkLogService.StopCountingTimeOperation(Mapper.Map(request.LicensePlate, request.ParkName));
 
             var totalCost = _paymentService.CalculateCost(request.ParkName, request.LicensePlate).Result;
 

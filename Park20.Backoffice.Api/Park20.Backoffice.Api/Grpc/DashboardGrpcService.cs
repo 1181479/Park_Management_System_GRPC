@@ -1,13 +1,7 @@
 ﻿using Grpc.Core;
-using Microsoft.AspNetCore.Mvc;
 using Park20.Backoffice.Api.ProtoMap;
-using Park20.Backoffice.Application.Services;
-using Park20.Backoffice.Core.Domain;
-using Park20.Backoffice.Core.Dtos.Requests;
-using Park20.Backoffice.Core.Dtos.Results;
 using Park20.Backoffice.Core.IServices;
 using Proto;
-using static Google.Rpc.Context.AttributeContext.Types;
 
 namespace Park20.Backoffice.Api.Grpc
 {

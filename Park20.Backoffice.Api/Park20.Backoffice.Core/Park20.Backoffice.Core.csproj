@@ -10,28 +10,4 @@
 		<Compile Remove="Dtos\Results\UserResultDto.cs" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <None Update="Proto\parky.proto">
-	    <GrpcServices>Server</GrpcServices>
-	  </None>
-	  <None Update="Proto\payment.proto">
-	    <GrpcServices>Server</GrpcServices>
-	  </None>
-	  <None Update="Proto\parking.proto">
-	    <GrpcServices>Server</GrpcServices>
-	  </None>
-	  <None Update="Proto\user.proto">
-	    <GrpcServices>Server</GrpcServices>
-	  </None>
-	  <None Update="Proto\dashboard.proto">
-	    <GrpcServices>Server</GrpcServices>
-	  </None>
-	  <None Update="Proto\vehicle.proto">
-	    <GrpcServices>Server</GrpcServices>
-	  </None>
-	  <None Update="Proto\vehiclegrpc.proto">
-	    <GrpcServices>Server</GrpcServices>
-	  </None>
-	</ItemGroup>
-
 </Project>

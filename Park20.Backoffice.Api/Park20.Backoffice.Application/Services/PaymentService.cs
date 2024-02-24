@@ -1,10 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Park20.Backoffice.Application.Mappers;
 using Park20.Backoffice.Core.Domain;
 using Park20.Backoffice.Core.Domain.Park;
 using Park20.Backoffice.Core.Domain.Payment;
-using Park20.Backoffice.Core.Dtos.Requests;
-using Park20.Backoffice.Core.Dtos.Results;
+using Park20.Backoffice.Core.Domain.User;
 using Park20.Backoffice.Core.IRepositories;
 using Park20.Backoffice.Core.IServices;
 using HttpRequest = Park20.Backoffice.Application.Requests.HttpRequests;
@@ -95,25 +93,18 @@ namespace Park20.Backoffice.Application.Services
 
         #endregion
 
-        public async Task<IEnumerable<PaymentMethodResultDto>> GetPaymentMethodListFromUser(string username)
+        public async Task<IEnumerable<PaymentMethod>> GetPaymentMethodListFromUser(string username)
         {
-            var result = await _paymentRepository.GetAllFromUser(username);
-            List<PaymentMethodResultDto> listPaymentMethod = new List<PaymentMethodResultDto>();
-            foreach (var item in result)
-            {
-                listPaymentMethod.Add(PaymentMethodMapper.ToPaymentMethodDto(item));
-            }
-            return listPaymentMethod;
+            return await _paymentRepository.GetAllFromUser(username);
         }
 
 
-        public async Task<PaymentMethodResultDto?> AddPaymentMethodToUser(CreatePaymentMethodRequestDto createPaymentMethodRequestDto)
+        public async Task<PaymentMethod?> AddPaymentMethodToUser(PaymentMethod paymentMethod, string username)
         {
-            var paymentMethod = PaymentMethodMapper.ToPaymentMethodDomain(createPaymentMethodRequestDto);
-            var result = await _paymentRepository.AddPaymentMethod(paymentMethod, createPaymentMethodRequestDto.Username);
+            var result = await _paymentRepository.AddPaymentMethod(paymentMethod, username);
             if (result != null)
             {
-                return PaymentMethodMapper.ToPaymentMethodDto(result);
+                return result;
             }
             return default;
         }
@@ -250,5 +241,11 @@ namespace Park20.Backoffice.Application.Services
 
         #endregion
 
+    }
+
+    internal class MakePaymentRequestDto
+    {
+        public string Token { get; set; }
+        public decimal Amount { get; set; }
     }
 }

@@ -19,32 +19,6 @@ message ParkingSpotCount {
   int32 automobileCount =  4;
 }
 
-message GetPriceTable {
-  string parkName =  1;
-  double nightFee =  2;
-  google.protobuf.Timestamp initialDate =  3;
-  repeated GetLinePriceTable priceLines =  4;
-}
-
-message GetLinePriceTable {
-  GetPeriod period =  1;
-}
-
-message GetPeriod {
-  string initialTime =  1;
-  string finalTime =  2;
-  repeated GetFractions fractions =  3;
-}
-
-message GetFractions {
-  int32 order =  1;
-  double minutes =  2;
-  double automobilePrice =  3;
-  double motorcyclePrice =  4;
-  double gplPrice =  5;
-  double electricPrice =  6;
-}
-
 message CreateParkLogResult {
   string licencePlate =   1;
   string parkName =   2;

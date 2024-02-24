@@ -1,11 +1,11 @@
-﻿using Park20.Backoffice.Core.Dtos.Requests;
+﻿using Park20.Backoffice.Core.Domain;
 
 namespace Park20.Backoffice.Core.IServices
 {
     public interface IParkLogService
     {
-        Task StartingCountingTimeOperation(string licensePlate, string parkName);
-        Task StopCountingTimeOperation(string licensePlate, string parkName);
+        Task StartingCountingTimeOperation(ParkLog park);
+        Task StopCountingTimeOperation(ParkLog park);
         Task<bool> UpdateAvailableParkingSpots(string parkName, string licensePlate, bool isEntrance);
     }
 }

@@ -1,6 +1,4 @@
-﻿using Park20.Backoffice.Core.Dtos.Requests;
-
-namespace Park20.Backoffice.Core.Domain.ParkyWallets
+﻿namespace Park20.Backoffice.Core.Domain.ParkyWallets
 {
     public class ParkyWallet
     {

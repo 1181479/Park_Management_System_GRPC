@@ -1,12 +1,11 @@
-﻿using Google.Protobuf;
-using Google.Protobuf.Collections;
-using Google.Protobuf.WellKnownTypes;
+﻿using Google.Protobuf.WellKnownTypes;
+using Newtonsoft.Json.Linq;
 using Park20.Backoffice.Core.Domain;
 using Park20.Backoffice.Core.Domain.Park;
-using Park20.Backoffice.Core.Dtos.Requests;
-using Park20.Backoffice.Core.Dtos.Results;
+using Park20.Backoffice.Core.Domain.ParkyWallets;
+using Park20.Backoffice.Core.Domain.User;
 using Proto;
-using System;
+using static Google.Rpc.Context.AttributeContext.Types;
 
 namespace Park20.Backoffice.Api.ProtoMap
 {
@@ -121,126 +120,66 @@ namespace Park20.Backoffice.Api.ProtoMap
             };
         }
 
-        public static ListParkDistanceResult Map(List<ParkDistanceResultDto> dto)
+        public static Core.Domain.Park.Park Map(Proto.PriceTable pt)
         {
-            List<ParkDistanceResult> distance = [];
-            dto.ForEach(d =>
+            return new Core.Domain.Park.Park
             {
-                distance.Add(Map(d));
-            });
-            return new ListParkDistanceResult
-            {
-                ParkDistance = { distance }
+                ParkName = pt.ParkName,
+                NightFee = pt.NightFee,
+                PriceTable = Map(pt.InitialDate.ToDateTime(), pt.PriceLines.ToList())
             };
         }
 
-        public static ParkDistanceResult Map(ParkDistanceResultDto dto)
+        public static Core.Domain.Park.PriceTable Map(DateTime initialDate, List<Proto.LinePriceTable> lpt)
         {
-            return new ParkDistanceResult
-            {
-                Latitude = dto.Latitude,
-                Longitude = dto.Longitude,
-                DistanceToTarget = dto.DistanceToTarget,
-                Location = dto.Location,
-                ParkName = dto.ParkName
-            };
-        }
-        public static GetPriceTable Map(GetPriceTableDto dto)
-        {
-            return new GetPriceTable
-            {
-                InitialDate = Timestamp.FromDateTime(dto.InitialDate.ToUniversalTime()),
-                NightFee = dto.NightFee,
-                ParkName = dto.ParkName,
-                PriceLines = { Map(dto.PriceLines) }
-            };
+            return new Core.Domain.Park.PriceTable { InitialDate = initialDate, LinePrices = Map(lpt) };
         }
 
-        public static List<GetLinePriceTable> Map(List<GetPriceTableDto.GetLinePriceTableDto> lpt)
+        public static List<Core.Domain.Park.LinePriceTable> Map(List<Proto.LinePriceTable> lpt)
         {
-            List<GetLinePriceTable> linePriceTables = [];
+            List<Core.Domain.Park.LinePriceTable> linePriceTables = [];
             lpt.ForEach(lp =>
             {
                 linePriceTables.Add(Map(lp));
             });
             return linePriceTables;
         }
-
-        public static GetLinePriceTable Map(GetPriceTableDto.GetLinePriceTableDto dto)
+        public static Core.Domain.Park.LinePriceTable Map(Proto.LinePriceTable lpt)
         {
-            return new GetLinePriceTable
+            return new Core.Domain.Park.LinePriceTable
             {
-                Period = Map(dto.Period)
+                Period = Map(lpt.Period)
             };
         }
 
-        public static GetPeriod Map(GetPriceTableDto.GetPeriodDto dto)
+        public static Core.Domain.Park.Period Map(Proto.Period p)
         {
-            return new GetPeriod
+            return new Core.Domain.Park.Period
             {
-                InitialTime = dto.InitialTime,
-                FinalTime = dto.FinalTime,
-                Fractions = { Map(dto.FractionList) }
+                InitialTime = p.InitialTime.ToDateTime().TimeOfDay,
+                FinalTime = p.FinalTime.ToDateTime().TimeOfDay,
+                Fractions = Map(p.FractionList.ToList())
             };
         }
 
-        public static List<GetFractions> Map(List<GetPriceTableDto.GetFractionsDto> lf)
+        public static List<Core.Domain.Park.Fraction> Map(List<Fractions> lf)
         {
-            List<GetFractions> fractions = [];
+            List<Core.Domain.Park.Fraction> fractions = [];
             lf.ForEach(f =>
             {
                 fractions.Add(Map(f));
             });
             return fractions;
         }
-        public static GetFractions Map(GetPriceTableDto.GetFractionsDto dto)
+        public static Core.Domain.Park.Fraction Map(Fractions f)
         {
-            return new GetFractions
+            return new Core.Domain.Park.Fraction
             {
-                AutomobilePrice = ((double)dto.AutomobilePrice),
-                ElectricPrice = ((double)dto.ElectricPrice),
-                GplPrice = ((double)dto.GplPrice),
-                Minutes = ((double)dto.Minutes),
-                MotorcyclePrice = ((double)dto.MotorcyclePrice),
-                Order = dto.Order
+                Order = f.Order,
+                Minutes = TimeSpan.FromMinutes(f.Minutes),
+                VehicleType = (Core.Domain.VehicleType)f.VehicleType,
+                Price = ((decimal)f.Price)
             };
-        }
-
-        public static PriceTableDto Map(Proto.PriceTable pt)
-        {
-            return new PriceTableDto(pt.ParkName, pt.NightFee, pt.InitialDate.ToDateTime(), Map(pt.PriceLines.ToList()));
-        }
-        public static List<LinePriceTableDto> Map(List<Proto.LinePriceTable> lpt)
-        {
-            List<LinePriceTableDto> linePriceTables = [];
-            lpt.ForEach(lp =>
-            {
-                linePriceTables.Add(Map(lp));
-            });
-            return linePriceTables;
-        }
-        public static LinePriceTableDto Map(Proto.LinePriceTable lpt)
-        {
-            return new LinePriceTableDto(Map(lpt.Period));
-        }
-
-        public static PeriodDto Map(Proto.Period p)
-        {
-            return new PeriodDto(p.InitialTime.ToString(), p.FinalTime.ToString(), Map(p.FractionList.ToList()));
-        }
-
-        public static List<FractionsDto> Map(List<Fractions> lf)
-        {
-            List<FractionsDto> fractions = [];
-            lf.ForEach(f =>
-            {
-                fractions.Add(Map(f));
-            });
-            return fractions;
-        }
-        public static FractionsDto Map(Fractions f)
-        {
-            return new FractionsDto(f.Order, f.Minutes, (Core.Domain.VehicleType)f.VehicleType, ((decimal)f.Price));
         }
 
         public static List<CustomerParkyCoinsSpentResult> Map(List<Core.Domain.DashboardElements> dashboardElements)
@@ -262,12 +201,12 @@ namespace Park20.Backoffice.Api.ProtoMap
             };
         }
 
-        public static ParkyWallet Map(ParkyWalletDto pwd)
+        public static Proto.ParkyWallet Map(Core.Domain.ParkyWallets.ParkyWallet pwd)
         {
-            return new ParkyWallet { CurrentBalance = pwd.CurrentBalance, Movements = { Map(pwd.Movements) } };
+            return new Proto.ParkyWallet { CurrentBalance = pwd.CurrentBalance, Movements = { Map(pwd.Movements) } };
         }
 
-        public static List<ParkyWalletMovement> Map(List<ParkyWalletMovementDto> lpwmd)
+        public static List<ParkyWalletMovement> Map(List<ParkyWalletMovements> lpwmd)
         {
             List<ParkyWalletMovement> movements = [];
             lpwmd.ForEach(f =>
@@ -277,17 +216,17 @@ namespace Park20.Backoffice.Api.ProtoMap
             return movements;
         }
 
-        public static ParkyWalletMovement Map(ParkyWalletMovementDto pwmd)
+        public static ParkyWalletMovement Map(ParkyWalletMovements pwmd)
         {
             return new ParkyWalletMovement
             {
                 Date = pwmd.Date.ToString(),
-                MovementType = pwmd.MovementType,
+                MovementType = pwmd.MovementId == 0 ? MovementType.Inbound.ToString() : MovementType.Outbound.ToString(),
                 Amount = pwmd.Amount
             };
         }
 
-        public static ListPaymentMethodResult Map(IEnumerable<PaymentMethodResultDto> lpaymentMethodResultDto)
+        public static ListPaymentMethodResult Map(IEnumerable<PaymentMethod> lpaymentMethodResultDto)
         {
             return new ListPaymentMethodResult
             {
@@ -295,7 +234,7 @@ namespace Park20.Backoffice.Api.ProtoMap
             };
         }
 
-        public static List<PaymentMethodResult> Map(List<PaymentMethodResultDto> lpaymentMethodResultDto)
+        public static List<PaymentMethodResult> Map(List<PaymentMethod> lpaymentMethodResultDto)
         {
             List<PaymentMethodResult> methods = [];
             lpaymentMethodResultDto.ForEach(f =>
@@ -305,21 +244,27 @@ namespace Park20.Backoffice.Api.ProtoMap
             return methods;
         }
 
-        public static PaymentMethodResult Map(PaymentMethodResultDto paymentMethodResultDto)
+        public static PaymentMethodResult Map(PaymentMethod paymentMethodResultDto)
         {
             return new PaymentMethodResult
             {
                 FullName = paymentMethodResultDto.FullName,
-                LastFourDigits = paymentMethodResultDto.LastFourDigits
+                LastFourDigits = paymentMethodResultDto.CardLastFourDigits
             };
         }
 
-        public static CreatePaymentMethodRequestDto Map(CreatePaymentMethodRequest request)
+        public static PaymentMethod Map(CreatePaymentMethodRequest request)
         {
-            return new CreatePaymentMethodRequestDto(request.LastFourDigits, request.ExpirationDate.ToDateTime(), request.FullName, request.Token, request.Username);
+            return new PaymentMethod
+            {
+                CardLastFourDigits = request.LastFourDigits,
+                ExpirationDate = request.ExpirationDate.ToDateTime(),
+                FullName = request.FullName,
+                PaymentToken = request.Token
+            };
         }
 
-        internal static ListCreateCustomerResult Map(List<CreateCustomerResultDto> result)
+        public static ListCreateCustomerResult Map(List<Customer> result)
         {
             return new ListCreateCustomerResult
             {
@@ -327,7 +272,7 @@ namespace Park20.Backoffice.Api.ProtoMap
             };
         }
 
-        internal static List<CreateCustomerResult> MapCustomers(List<CreateCustomerResultDto> result)
+        public static List<CreateCustomerResult> MapCustomers(List<Customer> result)
         {
             List<CreateCustomerResult> customers = [];
             result.ForEach(f =>
@@ -337,7 +282,7 @@ namespace Park20.Backoffice.Api.ProtoMap
             return customers;
         }
 
-        internal static CreateCustomerResult Map(CreateCustomerResultDto result)
+        public static CreateCustomerResult Map(Customer result)
         {
             return new CreateCustomerResult
             {
@@ -347,23 +292,29 @@ namespace Park20.Backoffice.Api.ProtoMap
             };
         }
 
-        internal static CreateVehicleRequestDto Map(CreateVehicleRequest request)
+        public static Vehicle Map(CreateVehicleRequest request)
         {
-            return new CreateVehicleRequestDto(request.LicensePlate, request.Brand, request.Model, request.Type, request.Username);
+            return new Vehicle
+            {
+                LicensePlate = request.LicensePlate,
+                Brand = request.Brand,
+                Model = request.Model,
+                Type = (Core.Domain.VehicleType)System.Enum.Parse(typeof(Core.Domain.VehicleType), request.Type)
+            };
         }
 
-        internal static VehicleResult Map(VehicleResultDto result)
+        public static VehicleResult Map(Vehicle result)
         {
             return new VehicleResult
             {
                 Brand = result.Brand,
                 LicensePlate = result.LicensePlate,
                 Model = result.Model,
-                Type = result.Type
+                Type = result.Type.ToString()
             };
         }
 
-        internal static List<VehicleResult> Map(List<VehicleResultDto> result)
+        public static List<VehicleResult> Map(List<Vehicle> result)
         {
             List<VehicleResult> vehicles = [];
             result.ForEach(f =>
@@ -373,12 +324,22 @@ namespace Park20.Backoffice.Api.ProtoMap
             return vehicles;
         }
 
-        internal static VehicleResults MapResults(List<VehicleResultDto> result)
+        public static VehicleResults MapResults(List<Vehicle> result)
         {
             return new VehicleResults
             {
                 Vehicles = { Map(result) }
             };
+        }
+
+        public static ParkLog Map(string licensePlate, string parkName)
+        {
+            return new ParkLog(licensePlate, parkName);
+        }
+
+        public static Customer Map(CreateCustomerRequest request)
+        {
+            return new Customer(request.Username, request.Email, request.Password, request.Name, false, null);
         }
     }
 }

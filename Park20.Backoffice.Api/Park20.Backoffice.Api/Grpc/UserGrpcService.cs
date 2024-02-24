@@ -1,6 +1,5 @@
 ﻿using Grpc.Core;
 using Park20.Backoffice.Api.ProtoMap;
-using Park20.Backoffice.Core.Dtos.Requests;
 using Park20.Backoffice.Core.IServices;
 using Proto;
 
@@ -21,7 +20,7 @@ namespace Park20.Backoffice.Api.Grpc
             {
                 return Task.FromResult(new CreateCustomerResult { Email = "", Username = "", Name = "" });
             }
-            var result = _userService.AddCustomer(new CreateCustomerRequestDto(request.Name, request.Password, request.Email, request.Username)).Result;
+            var result = _userService.AddCustomer(Mapper.Map(request)).Result;
             CreateCustomerResult filteredUser = new();
             request.FieldMask.Merge(Mapper.Map(result), filteredUser);
             return Task.FromResult(filteredUser);

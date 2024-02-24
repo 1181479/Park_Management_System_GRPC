@@ -1,9 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
-using Park20.Backoffice.Application.Mappers;
-using Park20.Backoffice.Core.Domain.ParkyWallets;
+﻿using Park20.Backoffice.Core.Domain.ParkyWallets;
 using Park20.Backoffice.Core.Domain.User;
-using Park20.Backoffice.Core.Dtos.Requests;
-using Park20.Backoffice.Core.Dtos.Results;
 using Park20.Backoffice.Core.IRepositories;
 using Park20.Backoffice.Core.IServices;
 
@@ -53,14 +49,14 @@ namespace Park20.Backoffice.Application.Services
             return await _parkyCoinsConfigurationRepository.GetBulkValue();
         }
 
-        public async Task<ParkyWalletDto> GetParkyWalletByUsername(string username)
+        public async Task<ParkyWallet> GetParkyWalletByUsername(string username)
         {
             var result = await _parkyWalletRepository.GetParkyWalletByUsername(username);
             if(result == null)
             {
                 return default;
             }
-            return ParkyWalletMapper.ToParkyWalletDto(result);
+            return result;
         }
             
 
