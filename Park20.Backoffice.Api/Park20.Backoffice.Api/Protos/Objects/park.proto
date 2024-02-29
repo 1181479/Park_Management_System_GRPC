@@ -82,25 +82,25 @@ message GetInfoByParkName {
 }
 
 message Park {
-    int32 id = 1;
-    int32 numberFloors = 2;
-    string parkName = 3;
-    double latitude = 4;
-    double longitude = 5;
-    string location = 6;
-    google.protobuf.Timestamp openingTime = 7;
-    google.protobuf.Timestamp closingTime = 8;
-    bool isActive = 9;
-    double nightFee = 10;
-    PriceTable priceTable = 11;
+    optional int32 id = 1;
+    optional int32 numberFloors = 2;
+    optional string parkName = 3;
+    optional double latitude = 4;
+    optional double longitude = 5;
+    optional string location = 6;
+    optional google.protobuf.Timestamp openingTime = 7;
+    optional google.protobuf.Timestamp closingTime = 8;
+    optional bool isActive = 9;
+    optional double nightFee = 10;
+    optional PriceTable priceTable = 11;
     repeated ParkingSpot parkingSpots = 12;
 }
 
 message ParkingSpot {
-    int32 parkingSpotId = 1;
-    VehicleType vehicleType = 2;
-    bool status = 3;
-    int32 floorNumber = 4;
+    optional int32 parkingSpotId = 1;
+    optional VehicleType vehicleType = 2;
+    optional bool status = 3;
+    optional int32 floorNumber = 4;
 }
 
 message ListPark {
