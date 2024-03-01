@@ -29,8 +29,6 @@ export const options = {
   summaryTimeUnit: "ms",
   stages: [
     { duration: "1m", target: 1 },
-    { duration: "2m", target: 10 },
-    { duration: "3m", target: 50 },
   ],
 };
 
