@@ -11,3 +11,5 @@ timeout /t 60
 k6 run grpcAllParksTwoSidedStream.js
 timeout /t 60
 k6 run grpcUpdateParkingValue.js
+timeout /t 60
+k6 run grpcLeavePark.js

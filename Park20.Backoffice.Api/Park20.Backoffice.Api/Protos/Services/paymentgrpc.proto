@@ -7,4 +7,9 @@ import "Objects/payment.proto";
 service PaymentGrpc {
     rpc AddPaymentMethod (CreatePaymentMethodRequest) returns (PaymentMethodResult);
     rpc GetPaymentMethodListFromUser (GetPaymentMethodListRequest) returns (ListPaymentMethodResult);
+    rpc PrintMetrics (PaymentEmptyMessage) returns (PaymentEmptyMessage);
+}
+
+
+message PaymentEmptyMessage{
 }

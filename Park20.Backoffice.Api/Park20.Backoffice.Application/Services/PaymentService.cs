@@ -14,7 +14,7 @@ namespace Park20.Backoffice.Application.Services
 {
     public class PaymentService : IPaymentService
     {
-
+        private static readonly List<double> durations = [];
         private readonly IPaymentRepository _paymentRepository;
         private readonly IInvoiceRepository _invoiceRepository;
         private readonly IParkRepository _parkRepository;
@@ -24,6 +24,7 @@ namespace Park20.Backoffice.Application.Services
         private readonly IUserRepository _userRepository;
         private readonly IParkyCoinsConfigurationRepository _parkyCoinsConfigurationRepository;
         private readonly IConfiguration _configuration;
+        private readonly GrpcChannel channel;
         public PaymentService(IPaymentRepository paymentRepository, IInvoiceRepository invoiceRepository, IConfiguration configuration, IParkRepository parkRepository,
             IVehicleRepository vehicleRepository, IParkLogRepository parkLogRepository, IParkyWalletRepository parkyWalletRepository,
             IUserRepository userRepository, IParkyCoinsConfigurationRepository parkyCoinsConfigurationRepository)
@@ -37,6 +38,9 @@ namespace Park20.Backoffice.Application.Services
             _parkWalletRepository = parkyWalletRepository;
             _userRepository = userRepository;
             _parkyCoinsConfigurationRepository = parkyCoinsConfigurationRepository;
+            var config = _configuration.GetSection("PaymentEndpoints");
+            var baseUrl = config["PaymentSimulatorBaseUrl"];
+            channel = GrpcChannel.ForAddress(baseUrl);
         }
 
         #region Make Payment
@@ -237,22 +241,46 @@ namespace Park20.Backoffice.Application.Services
 
         private async Task<bool> SimulatePayment(string token, decimal totalCost)
         {
-            var config = _configuration.GetSection("PaymentEndpoints");
-
-            var baseUrl = config["PaymentSimulatorBaseUrl"];
-
-            if (string.IsNullOrWhiteSpace(baseUrl))
-                return default;
-
-            using var channel = GrpcChannel.ForAddress(baseUrl);
             var client = new PaymentGrpc.PaymentGrpcClient(channel);
             var fieldMask = FieldMask.FromFieldNumbers<PaymentResponse>(1);
-            return (await client.ProcessPaymentAsync(new Protos.PaymentRequest { Amount = (double)totalCost, Token = token, FieldMask = fieldMask })).Result;
+            DateTime startTime = DateTime.Now;
+            bool res = (await client.ProcessPaymentAsync(new Protos.PaymentRequest { Amount = (double)totalCost, Token = token, FieldMask = fieldMask })).Result;
+            DateTime endTime = DateTime.Now;
+            TimeSpan duration = endTime - startTime;
+            durations.Add(duration.TotalMilliseconds - 1000);
+            return res;
         }
 
 
         #endregion
 
+        public void PrintMetrics()
+        {
+            double sum = 0;
+            foreach (var duration in durations)
+            {
+                sum += duration;
+            }
+            if (durations.Count > 0)
+            {
+                double avg = sum / durations.Count;
+                double min = durations.First();
+                double max = durations.Last();
+                double median = durations.Count % 2 == 0 ?
+                    (durations[durations.Count / 2 - 1] + durations[durations.Count / 2]) / 2 :
+                    durations[durations.Count / 2];
+
+                double p90 = durations[(int)Math.Ceiling(0.9 * durations.Count) - 1];
+                double p95 = durations[(int)Math.Ceiling(0.95 * durations.Count) - 1];
+
+                Console.WriteLine($"Average: {avg} milliseconds");
+                Console.WriteLine($"Minimum: {min} milliseconds");
+                Console.WriteLine($"Median: {median} milliseconds");
+                Console.WriteLine($"Maximum: {max} milliseconds");
+                Console.WriteLine($"p(90): {p90} milliseconds");
+                Console.WriteLine($"p(95): {p95} milliseconds");
+            }
+        }
     }
 
     internal class MakePaymentRequestDto

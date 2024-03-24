@@ -67,7 +67,7 @@ namespace PaymentSimulation.Services
         private bool SimulatePaymentProcessing(PaymentRequest paymentRequest, bool token)
         {
             Console.WriteLine("Processing...");
-            Thread.Sleep(3000);
+            Thread.Sleep(1000);
             return token;
         }
 

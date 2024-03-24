@@ -42,5 +42,11 @@ namespace Park20.Backoffice.Api.Grpc
             }
             return Task.FromResult(lfilteredPmr);
         }
+
+        public override Task<PaymentEmptyMessage> PrintMetrics(PaymentEmptyMessage request, ServerCallContext context)
+        {
+            _paymentService.PrintMetrics();
+            return Task.FromResult(new PaymentEmptyMessage { });
+        }
     }
 }
