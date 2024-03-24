@@ -6,49 +6,49 @@ import "google/protobuf/field_mask.proto";
 
 message ParkDistanceResult {
   string parkName =  1;
-  double distanceToTarget =  2;
+  double distance_to_target =  2;
   string location =  3;
   double longitude =  4;
   double latitude =  5;
 }
 
 message ParkingSpotCount {
-  int32 motocycleCount =  1;
-  int32 gplCount =  2;
-  int32 electricCount =  3;
-  int32 automobileCount =  4;
+  int32 motocycle_count =  1;
+  int32 gpl_count =  2;
+  int32 electric_count =  3;
+  int32 automobile_count =  4;
 }
 
 message CreateParkLogResult {
-  string licencePlate =   1;
-  string parkName =   2;
+  string licence_plate =   1;
+  string park_name =   2;
   google.protobuf.Timestamp startingTime =   3;
 }
 
 message UpdateParkingSpotStatusRequest {
   bool status =   1;
-  int32 parkingSpotId =   2;
+  int32 parking_spot_id =   2;
   google.protobuf.FieldMask fieldMask = 3;
 }
 
 message ParkingSpotsUpdateRequest {
-  string parkName =   1;
-  string licensePlate =   2;
-  bool isEntrance =   3;
+  string park_name =   1;
+  string license_plate =   2;
+  bool is_entrance =   3;
   google.protobuf.FieldMask fieldMask = 4;
 }
 
 message ParkCheckRequest {
-  string licencePlate =   1;
-  string parkName =   2;
+  string licence_plate =   1;
+  string park_name =   2;
   google.protobuf.FieldMask fieldMask = 3;
 }
 
 message PriceTable {
-  string parkName =   1;
-  double nightFee =   2;
-  google.protobuf.Timestamp initialDate =   3;
-  repeated LinePriceTable priceLines =   4;
+  string park_name =   1;
+  double night_fee =   2;
+  google.protobuf.Timestamp initial_date =   3;
+  repeated LinePriceTable price_lines =   4;
 }
 
 message LinePriceTable {
@@ -56,51 +56,51 @@ message LinePriceTable {
 }
 
 message Period {
-  google.protobuf.Timestamp initialTime =   1;
-  google.protobuf.Timestamp finalTime =   2;
-  repeated Fractions fractionList =   3;
+  google.protobuf.Timestamp initial_time =   1;
+  google.protobuf.Timestamp final_time =   2;
+  repeated Fractions fraction_list =   3;
 }
 
 message Fractions {
   int32 order =   1;
   int32 minutes =   2;
-  VehicleType vehicleType =   3;
+  VehicleType vehicle_type =   3;
   double price =   4;
 }
 
 message TaskResult {
-	bool isSuccessful = 1;
+	bool is_successful = 1;
 }
 
 message ListParkNames {
-	repeated string parkNames = 1;
+	repeated string park_names = 1;
 }
 
 message GetInfoByParkName {
-	string parkName = 1;
+	string park_name = 1;
     google.protobuf.FieldMask fieldMask = 2;
 }
 
 message Park {
     optional int32 id = 1;
-    optional int32 numberFloors = 2;
-    optional string parkName = 3;
+    optional int32 number_floors = 2;
+    optional string park_name = 3;
     optional double latitude = 4;
     optional double longitude = 5;
     optional string location = 6;
-    optional google.protobuf.Timestamp openingTime = 7;
-    optional google.protobuf.Timestamp closingTime = 8;
-    optional bool isActive = 9;
-    optional double nightFee = 10;
-    optional PriceTable priceTable = 11;
-    repeated ParkingSpot parkingSpots = 12;
+    optional google.protobuf.Timestamp opening_time = 7;
+    optional google.protobuf.Timestamp closing_time = 8;
+    optional bool is_active = 9;
+    optional double night_fee = 10;
+    optional PriceTable price_table = 11;
+    repeated ParkingSpot parking_spots = 12;
 }
 
 message ParkingSpot {
-    optional int32 parkingSpotId = 1;
-    optional VehicleType vehicleType = 2;
+    optional int32 parking_spot_id = 1;
+    optional VehicleType vehicle_type = 2;
     optional bool status = 3;
-    optional int32 floorNumber = 4;
+    optional int32 floor_number = 4;
 }
 
 message ListPark {
@@ -108,11 +108,11 @@ message ListPark {
 }
 
 message ListParkingSpot {
-	repeated ParkingSpot parkingSpots = 1;
+	repeated ParkingSpot parking_spots = 1;
 }
 
 message ListParkDistanceResult {
-	repeated ParkDistanceResult parkDistance = 1;
+	repeated ParkDistanceResult park_distance = 1;
 }
 
 message GetAllParksByDistanceRequest {

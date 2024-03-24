@@ -2,6 +2,7 @@
 using Park20.Backoffice.Api.ProtoMap;
 using Park20.Backoffice.Core.IServices;
 using Proto;
+using static Google.Rpc.Context.AttributeContext.Types;
 
 namespace Park20.Backoffice.Api.Grpc
 {
@@ -190,5 +191,95 @@ namespace Park20.Backoffice.Api.Grpc
             request.FieldMask.Merge(pt, filteredPT);
             return Task.FromResult(filteredPT);
         }
+
+        public override async Task<ListPark> GetAllParksClientStream(IAsyncStreamReader<EmptyRequest> requestStream, ServerCallContext context)
+        {
+            ListPark filteredParks = new();
+            while (await requestStream.MoveNext())
+            {
+                var request = requestStream.Current;
+
+                if (request == null)
+                {
+                    throw new RpcException(new Status(StatusCode.InvalidArgument, "Empty request received."));
+                }
+
+                ListPark parks = Mapper.Map(_parkService.GetAllParks().ToList());
+                var fieldMask = requestStream.Current.FieldMask;
+
+                if (fieldMask == null || !fieldMask.ToString().Contains("parks"))
+                {
+                    foreach (var park in parks.Parks)
+                    {
+                        Proto.Park filteredPark = new Proto.Park();
+                        fieldMask.Merge(park, filteredPark);
+                        filteredParks.Parks.Add(filteredPark);
+                    }
+                }
+                else
+                {
+                    fieldMask.Merge(parks, filteredParks);
+                }
+            }
+            return filteredParks;
+        }
+
+        public override async Task GetAllParksTwoSidedStream(IAsyncStreamReader<EmptyRequest> requestStream, IServerStreamWriter<ListPark> responseStream, ServerCallContext context)
+        {
+            while (await requestStream.MoveNext())
+            {
+                var request = requestStream.Current;
+                ListPark filteredParks = new();
+                // Apply filtering based on FieldMask
+                if (request == null)
+                {
+                    throw new RpcException(new Status(StatusCode.InvalidArgument, "Empty request received."));
+                }
+
+                ListPark parks = Mapper.Map(_parkService.GetAllParks().ToList());
+                var fieldMask = requestStream.Current.FieldMask;
+
+                if (fieldMask == null || !fieldMask.ToString().Contains("parks"))
+                {
+                    foreach (var park in parks.Parks)
+                    {
+                        Proto.Park filteredPark = new Proto.Park();
+                        fieldMask.Merge(park, filteredPark);
+                        filteredParks.Parks.Add(filteredPark);
+                    }
+                }
+                else
+                {
+                    fieldMask.Merge(parks, filteredParks);
+                }
+
+                await responseStream.WriteAsync(filteredParks);
+            }
+        }
+
+        public override async Task GetAllParksServerStream(EmptyRequest request, IServerStreamWriter<ListPark> responseStream, ServerCallContext context)
+        {
+            ListPark filteredParks = new();
+            ListPark parks = Mapper.Map(_parkService.GetAllParks().ToList());
+
+            // Apply filtering based on FieldMask
+            var fieldMask = request.FieldMask;
+
+            if (fieldMask == null || !fieldMask.ToString().Contains("parks"))
+            {
+                foreach (var park in parks.Parks)
+                {
+                    Proto.Park filteredPark = new Proto.Park();
+                    fieldMask.Merge(park, filteredPark);
+                    filteredParks.Parks.Add(filteredPark);
+                }
+            }
+            else
+            {
+                fieldMask.Merge(parks, filteredParks);
+            }
+            await responseStream.WriteAsync(filteredParks);
+        }
+
     }
 }

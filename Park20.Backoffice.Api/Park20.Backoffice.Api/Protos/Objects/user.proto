@@ -4,28 +4,28 @@ import "google/protobuf/field_mask.proto";
 import "google/protobuf/timestamp.proto";
 
 message CreateCustomerRequest {
-    string Name = 1;
-    string Password = 2;
-    string Email = 3;
-    string Username = 4;
+    string name = 1;
+    string password = 2;
+    string email = 3;
+    string username = 4;
     google.protobuf.FieldMask fieldMask = 5;
 }
 
 message GetCustomerRequest {
-    string Email = 1;
+    string email = 1;
     google.protobuf.FieldMask fieldMask = 2;
 }
 
 message CreateCustomerResult {
-    string Name = 1;
-    string Email = 2;
-    string Username = 3;
+    string name = 1;
+    string email = 2;
+    string username = 3;
 }
 
 message GetCustomerResult {
-    string Name = 1;
-    string Email = 2;
-    string Username = 3;
+    string name = 1;
+    string email = 2;
+    string username = 3;
 }
 
 message CheckUserRequest {
@@ -44,11 +44,11 @@ message GetUserRequest {
 }
 
 message ListCreateCustomerResult {
-    repeated CreateCustomerResult Customers = 1;
+    repeated CreateCustomerResult customers = 1;
 }
 
 message GetUsersBeforeDateRequest {
-    google.protobuf.Timestamp expirationDate = 1;
+    google.protobuf.Timestamp expiration_date = 1;
     google.protobuf.FieldMask fieldMask = 2;
 }
 

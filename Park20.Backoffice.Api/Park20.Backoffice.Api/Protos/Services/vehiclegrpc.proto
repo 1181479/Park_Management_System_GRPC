@@ -21,10 +21,10 @@ message GetVehicleListFromUserRequest {
 }
 
 message GetVehicleByLicencePlateRequest {
-    string licensePlate = 1;
+    string license_plate = 1;
     google.protobuf.FieldMask fieldMask = 2;
 }
 
 message ParkingSpotsUpdateResult {
-    bool isSuccessful = 1;
+    bool is_successful = 1;
 }

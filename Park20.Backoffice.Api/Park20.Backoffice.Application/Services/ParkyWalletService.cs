@@ -74,7 +74,7 @@ namespace Park20.Backoffice.Application.Services
 
         public async Task<bool> UpdateParkingValue(int value)
         {
-            await _parkyCoinsConfigurationRepository.UpdateCurrencyValue(value);
+            await _parkyCoinsConfigurationRepository.UpdateParkingValue(value);
             return true;
         }
 

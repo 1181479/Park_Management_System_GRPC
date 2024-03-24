@@ -4,8 +4,8 @@ import "google/protobuf/field_mask.proto";
 package Proto;
 
 message PaymentMethodResult {
-  int32 lastFourDigits =   1;
-  string fullName =   2;
+  int32 last_four_digits =   1;
+  string full_name =   2;
   google.protobuf.FieldMask fieldMask = 3;
 }
 
@@ -20,19 +20,19 @@ message MakePaymentRequest {
 }
 
 message CreatePaymentMethodRequest {
-  int32 lastFourDigits =   1;
-  google.protobuf.Timestamp expirationDate =   2;
-  string fullName =   3;
+  int32 last_four_digits =   1;
+  google.protobuf.Timestamp expiration_date =   2;
+  string full_name =   3;
   string token =   4;
   string username =   5;
   google.protobuf.FieldMask fieldMask = 6;
 }
 
 message HibridPayment {
-    double parkyCoinsAmount = 1;
-    double otherPaymentMethodAmount = 2;
-    double totalCost = 3;
-    bool isSuccessfull = 4;
+    double parky_coins_amount = 1;
+    double other_payment_method_amount = 2;
+    double total_cost = 3;
+    bool is_successfull = 4;
 }
 
 message GetPaymentMethodListRequest {
@@ -41,5 +41,5 @@ message GetPaymentMethodListRequest {
 }
 
 message ListPaymentMethodResult {
-    repeated PaymentMethodResult listPaymentMethod = 1;
+    repeated PaymentMethodResult list_payment_method = 1;
 }

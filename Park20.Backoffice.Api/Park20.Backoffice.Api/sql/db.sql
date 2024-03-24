@@ -234,23 +234,30 @@ VALUES
 -- Mock data for ParkingSpot table
 INSERT INTO [dbo].[ParkingSpot] ([Status], [FloorNumber], [VehicleType], [ParkId])
 VALUES 
-    (1, 1, '2', 3),
+    (0, 1, '2', 3),
     (0, 2, '0', 5),
-    (1, 1, '1', 8),
+    (0, 1, '1', 8),
     (0, 2, '0', 2),
-    (1, 3, '1', 4),
+    (0, 3, '1', 4),
     (0, 2, '0', 7),
-    (1, 1, '2', 1),
-    (1, 3, '1', 6),
+    (0, 1, '2', 1),
+    (0, 3, '1', 6),
     (0, 2, '0', 3),
-    (1, 3, '1', 5),
+    (0, 3, '1', 5),
     (0, 2, '0', 4),
-    (1, 3, '1', 2),
+    (0, 3, '1', 2),
     (0, 2, '0', 1),
-    (1, 1, '2', 7),
+    (0, 1, '2', 7),
     (0, 2, '0', 6),
-    (1, 3, '1', 3),
-    (0, 2, '0', 8);
+    (0, 3, '1', 3),
+    (0, 2, '0', 8),
+    (0, 1, '2', 9),
+    (0, 2, '0', 9),
+    (0, 1, '1', 9),
+    (0, 2, '0', 10),
+    (0, 3, '1', 10),
+    (0, 2, '0', 10),
+    (0, 3, '1', 10);
 
 -- Mock data for PriceTable table
 INSERT INTO [dbo].[PriceTable] ([InitialDate])
@@ -304,39 +311,55 @@ VALUES
     ('14:00:00', '18:00:00');
 
 -- Mock data for Fraction table
-INSERT INTO [dbo].[Fraction] ([Order], [Minutes], [VehicleType], [PeriodId])
+INSERT INTO [dbo].[Fraction] ([Order], [Minutes], [VehicleType], [PeriodId], [Price])
 VALUES 
-    (1, '00:15:00', '0', 1),
-    (2, '00:30:00', '1', 1),
-    (3, '00:45:00', '2', 1),
-    (4, '01:00:00', '3', 1),
-    (1, '00:20:00', '0', 2),
-    (2, '00:40:00', '1', 2),
-    (3, '01:00:00', '2', 2),
-    (4, '01:20:00', '3', 2),
-    (1, '00:10:00', '0', 3),
-    (2, '00:20:00', '1', 3),
-    (3, '00:30:00', '2', 3),
-    (4, '00:40:00', '3', 3),
-    (1, '00:15:00', '0', 4),
-    (2, '00:30:00', '1', 4),
-    (3, '00:45:00', '2', 4),
-    (4, '01:00:00', '3', 4),
-    (1, '00:10:00', '0', 5),
-    (2, '00:20:00', '1', 5),
-    (3, '00:30:00', '2', 5),
-    (4, '00:40:00', '3', 5),
-    (1, '00:15:00', '0', 6),
-    (2, '00:30:00', '1', 6),
-    (3, '00:45:00', '2', 6),
-    (1, '00:20:00', '0', 7),
-    (2, '00:40:00', '1', 7),
-    (3, '01:00:00', '2', 7),
-    (4, '01:20:00', '3', 7),
-    (1, '00:10:00', '0', 8),
-    (2, '00:20:00', '1', 8),
-    (3, '00:30:00', '2', 8),
-    (4, '00:40:00', '3', 8);
+    -- Period 1 Prices
+    (1, '00:15:00', '0', 1, 3.00),
+    (2, '00:30:00', '1', 1, 5.00),
+    (3, '00:45:00', '2', 1, 7.00),
+    (4, '01:00:00', '3', 1, 9.00),
+
+    -- Period 2 Prices
+    (1, '00:20:00', '0', 2, 4.00),
+    (2, '00:40:00', '1', 2, 6.50),
+    (3, '01:00:00', '2', 2, 8.00),
+    (4, '01:20:00', '3', 2, 10.00),
+
+    -- Period 3 Prices
+    (1, '00:10:00', '0', 3, 2.50),
+    (2, '00:20:00', '1', 3, 4.50),
+    (3, '00:30:00', '2', 3, 6.50),
+    (4, '00:40:00', '3', 3, 8.50),
+
+    -- Period 4 Prices
+    (1, '00:15:00', '0', 4, 3.00),
+    (2, '00:30:00', '1', 4, 5.50),
+    (3, '00:45:00', '2', 4, 7.50),
+    (4, '01:00:00', '3', 4, 9.50),
+
+    -- Period 5 Prices
+    (1, '00:10:00', '0', 5, 2.00),
+    (2, '00:20:00', '1', 5, 4.00),
+    (3, '00:30:00', '2', 5, 6.00),
+    (4, '00:40:00', '3', 5, 8.00),
+
+    -- Period 6 Prices
+    (1, '00:15:00', '0', 6, 3.50),
+    (2, '00:30:00', '1', 6, 6.00),
+    (3, '00:45:00', '2', 6, 8.00),
+
+    -- Period 7 Prices
+    (1, '00:20:00', '0', 7, 4.50),
+    (2, '00:40:00', '1', 7, 7.00),
+    (3, '01:00:00', '2', 7, 9.00),
+    (4, '01:20:00', '3', 7, 11.00),
+
+    -- Period 8 Prices
+    (1, '00:10:00', '0', 8, 2.50),
+    (2, '00:20:00', '1', 8, 5.00),
+    (3, '00:30:00', '2', 8, 7.00),
+    (4, '00:40:00', '3', 8, 9.00);
+
 
 -- Mock data for Customer table
 INSERT INTO [dbo].[Customer] ([Username], [Email], [Password], [Name], [Blocked], [Invitecode], [RegistrationDate], [ParkyWalletId])
@@ -353,14 +376,14 @@ VALUES
 -- Mock data for Vehicle table
 INSERT INTO [dbo].[Vehicle] ([LicensePlate], [Model], [Brand], [Type], [CustomerId])
 VALUES 
-    ('ABC123', 'Sedan', 'Toyota', 'Car', 1),
-    ('XYZ456', 'SUV', 'Ford', 'Car', 2),
-    ('JKL789', 'Motorcycle', 'Honda', 'Motorcycle', 3),
-    ('MNO012', 'Truck', 'Chevrolet', 'Truck', 4),
-    ('PQR345', 'Hatchback', 'Volkswagen', 'Car', 5),
-    ('STU678', 'Motorcycle', 'Harley-Davidson', 'Motorcycle', 6),
-    ('VWX901', 'SUV', 'Nissan', 'Car', 7),
-    ('YZA234', 'Convertible', 'Mazda', 'Car', 8);
+    ('ABC123', 'Sedan', 'Toyota', '1', 1),
+    ('XYZ456', 'SUV', 'Ford', '1', 2),
+    ('JKL789', 'Motorcycle', 'Honda', '0', 3),
+    ('MNO012', 'Truck', 'Chevrolet', '2', 4),
+    ('PQR345', 'Hatchback', 'Volkswagen', '1', 5),
+    ('STU678', 'Motorcycle', 'Harley-Davidson', '0', 6),
+    ('VWX901', 'SUV', 'Nissan', '3', 7),
+    ('YZA234', 'Convertible', 'Mazda', '3', 8);
 
 -- Mock data for ParkLog table
 INSERT INTO [dbo].[ParkLog] ([VehicleId], [ParkId], [StartTime], [EndTime])
@@ -389,14 +412,10 @@ VALUES
 -- Mock data for ParkyCoinsConfiguration table
 INSERT INTO [dbo].[ParkyCoinsConfiguration] ([ConfigName], [Description], [Amount])
 VALUES 
-    ('Basic', 'Basic Package', '10.00'),
-    ('Premium', 'Premium Package', '20.00'),
-    ('Standard', 'Standard Package', '15.00'),
-    ('Deluxe', 'Deluxe Package', '25.00'),
-    ('Economy', 'Economy Package', '12.00'),
-    ('VIP', 'VIP Package', '30.00'),
-    ('Gold', 'Gold Package', '35.00'),
-    ('Silver', 'Silver Package', '28.00');
+    ('BulkValue', 'Bulk Value', '10'),
+    ('ParkingValue', 'Parking Value', '10'),
+    ('RegestryValue', 'Regestry Value', '20'),
+    ('ParkyCoinsValue', 'Parky Coins Value', '15');
 
 -- Mock data for ParkyWallet table
 INSERT INTO [dbo].[ParkyWallet] ([Amount])
@@ -413,14 +432,14 @@ VALUES
 -- Mock data for ParkyWalletMovements table
 INSERT INTO [dbo].[ParkyWalletMovements] ([Amount], [Date], [MovementType], [ParkyWalletId])
 VALUES 
-    (10, '2023-11-14T08:30:00', 'Deposit', 1),
-    (20, '2023-11-14T10:00:00', 'Deposit', 2),
-    (15, '2023-11-14T11:30:00', 'Deposit', 3),
-    (25, '2023-11-14T13:00:00', 'Deposit', 4),
-    (12, '2023-11-14T14:30:00', 'Deposit', 5),
-    (18, '2023-11-14T16:00:00', 'Deposit', 6),
-    (22, '2023-11-14T17:30:00', 'Deposit', 7),
-    (28, '2023-11-14T19:00:00', 'Deposit', 8);
+    (10, '2023-11-14T08:30:00', '0', 1),
+    (20, '2023-11-14T10:00:00', '0', 2),
+    (15, '2023-11-14T11:30:00', '0', 3),
+    (25, '2023-11-14T13:00:00', '0', 4),
+    (12, '2023-11-14T14:30:00', '0', 5),
+    (18, '2023-11-14T16:00:00', '0', 6),
+    (22, '2023-11-14T17:30:00', '0', 7),
+    (28, '2023-11-14T19:00:00', '1', 8);
 
 -- Mock data for PaymentMethod table
 INSERT INTO [dbo].[PaymentMethod] ([CustomerId], [PaymentToken], [PaymentMethodType], [CardLastFourDigits], [FullName], [ExpirationDate])

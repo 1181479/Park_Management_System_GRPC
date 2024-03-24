@@ -7,12 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Protos\**" />
-    <EmbeddedResource Remove="Protos\**" />
-    <None Remove="Protos\**" />
-  </ItemGroup>
-
-  <ItemGroup>
+	  <PackageReference Include="Grpc.AspNetCore" Version="2.60.0" />
+	  <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.60.0" />
+	  <PackageReference Include="Grpc.Tools" Version="2.61.0">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+    <PackageReference Include="Grpc.Net.Client" Version="2.61.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
@@ -20,5 +21,16 @@
   <ItemGroup>
     <ProjectReference Include="..\Park20.Backoffice.Core\Park20.Backoffice.Core.csproj" />
   </ItemGroup>
+
+	<ItemGroup>
+		<Protobuf Include="Protos\Objects\payment.proto">
+			<ProtoRoot>Protos\</ProtoRoot>
+			<GrpcServices>Client</GrpcServices>
+		</Protobuf>
+		<Protobuf Include="Protos\Services\paymentgrpc.proto">
+			<ProtoRoot>Protos\</ProtoRoot>
+			<GrpcServices>Client</GrpcServices>
+		</Protobuf>
+	</ItemGroup>
 
 </Project>

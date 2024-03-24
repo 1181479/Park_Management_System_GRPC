@@ -7,7 +7,7 @@ namespace PaymentSimulation.Services
     public class PaymentService : IPaymentService
     {
 
-        List<string> tokens = [];
+        static readonly List<string> tokens = [];
         public bool ProcessPayment(PaymentRequest paymentRequest)//, out string receipt, out string confirmation)
         {
             bool token = FindToken(paymentRequest.Token);
@@ -18,15 +18,15 @@ namespace PaymentSimulation.Services
                 //receipt = GeneratePaymentReceipt(paymentRequest);
                 //confirmation = GenerateConfirmation(paymentRequest, user);
                 Console.WriteLine("Payment Successful");
+                return true;
             }
             else
             {
                 //receipt = null;
                 //confirmation = null;
                 Console.WriteLine("Payment Failed");
+                return false;
             }
-
-            return true;
         }
 
         public TokenResponse GenerateToken(GenerateTokenRequest request)

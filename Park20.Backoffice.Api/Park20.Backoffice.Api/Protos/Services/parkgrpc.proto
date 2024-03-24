@@ -10,6 +10,9 @@ service ParkGrpc {
     rpc GetAvailableSpace (ParkCheckRequest) returns (TaskResult);
     rpc GetVehicleTypeAvailable (ParkCheckRequest) returns (TaskResult);
     rpc GetAllParks (EmptyRequest) returns (ListPark);
+    rpc GetAllParksClientStream (stream EmptyRequest) returns (ListPark);
+    rpc GetAllParksTwoSidedStream (stream EmptyRequest) returns (stream ListPark);
+    rpc GetAllParksServerStream (EmptyRequest) returns (stream ListPark);
     rpc GetParkingSpotsCount (GetInfoByParkName) returns (ParkingSpotCount);
     rpc GetAllParksByDistance (GetAllParksByDistanceRequest) returns (ListParkDistanceResult);
     rpc GetParkNames (EmptyRequest) returns (ListParkNames);

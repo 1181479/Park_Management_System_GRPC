@@ -1,11 +1,14 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Google.Protobuf.WellKnownTypes;
+using Grpc.Net.Client;
+using Microsoft.Extensions.Configuration;
 using Park20.Backoffice.Core.Domain;
 using Park20.Backoffice.Core.Domain.Park;
 using Park20.Backoffice.Core.Domain.Payment;
 using Park20.Backoffice.Core.Domain.User;
 using Park20.Backoffice.Core.IRepositories;
 using Park20.Backoffice.Core.IServices;
-using HttpRequest = Park20.Backoffice.Application.Requests.HttpRequests;
+using PaymentClient;
+using Protos;
 
 namespace Park20.Backoffice.Application.Services
 {
@@ -20,11 +23,12 @@ namespace Park20.Backoffice.Application.Services
         private readonly IParkyWalletRepository _parkWalletRepository;
         private readonly IUserRepository _userRepository;
         private readonly IParkyCoinsConfigurationRepository _parkyCoinsConfigurationRepository;
-        public PaymentService(IPaymentRepository paymentRepository, IInvoiceRepository invoiceRepository, IConfiguration configuration, IParkRepository parkRepository, 
-            IVehicleRepository vehicleRepository, IParkLogRepository parkLogRepository, IParkyWalletRepository parkyWalletRepository, 
+        private readonly IConfiguration _configuration;
+        public PaymentService(IPaymentRepository paymentRepository, IInvoiceRepository invoiceRepository, IConfiguration configuration, IParkRepository parkRepository,
+            IVehicleRepository vehicleRepository, IParkLogRepository parkLogRepository, IParkyWalletRepository parkyWalletRepository,
             IUserRepository userRepository, IParkyCoinsConfigurationRepository parkyCoinsConfigurationRepository)
         {
-            HttpRequest.SetConfiguration(configuration);
+            _configuration = configuration;
             _paymentRepository = paymentRepository;
             _invoiceRepository = invoiceRepository;
             _parkRepository = parkRepository;
@@ -111,7 +115,7 @@ namespace Park20.Backoffice.Application.Services
 
         private async Task<double> CalculateTime(ParkLog parkLog)
         {
-            
+
             if (parkLog == null)
             {
                 return 0;
@@ -154,7 +158,7 @@ namespace Park20.Backoffice.Application.Services
 
             Period period = GetLinePriceTable(parkLog.StartTime, parkLog.EndTime, park).Period;
 
-            List<Fraction> orderedFractions = period.Fractions.Where(fraction => 
+            List<Fraction> orderedFractions = period.Fractions.Where(fraction =>
                             fraction.VehicleType == vehicle.Type).OrderBy(f => f.Order).ToList();
 
             double sumFractionsTime = 0;
@@ -181,12 +185,12 @@ namespace Park20.Backoffice.Application.Services
 
         private async Task CreateParkyWalletMovementsForEachHour(int parkyWalletId, double totalMinutes, string username)
         {
-                 
+
             var amountForEachHour = await _parkyCoinsConfigurationRepository.GetParkingValue();
 
-            int amount = (int) (totalMinutes / 60) * amountForEachHour;
+            int amount = (int)(totalMinutes / 60) * amountForEachHour;
 
-            if(amount < 0)
+            if (amount < 0)
             {
                 return;
             }
@@ -233,9 +237,17 @@ namespace Park20.Backoffice.Application.Services
 
         private async Task<bool> SimulatePayment(string token, decimal totalCost)
         {
+            var config = _configuration.GetSection("PaymentEndpoints");
 
-            return await HttpRequest.SendHttpPostRequest<bool>("PaymentSimulatorBaseUrl", "ProcessPaymentEndpoint",
-                new MakePaymentRequestDto { Token = token, Amount = totalCost });
+            var baseUrl = config["PaymentSimulatorBaseUrl"];
+
+            if (string.IsNullOrWhiteSpace(baseUrl))
+                return default;
+
+            using var channel = GrpcChannel.ForAddress(baseUrl);
+            var client = new PaymentGrpc.PaymentGrpcClient(channel);
+            var fieldMask = FieldMask.FromFieldNumbers<PaymentResponse>(1);
+            return (await client.ProcessPaymentAsync(new Protos.PaymentRequest { Amount = (double)totalCost, Token = token, FieldMask = fieldMask })).Result;
         }
 
 

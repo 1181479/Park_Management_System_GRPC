@@ -1,5 +1,4 @@
 using Dapper;
-using Microsoft.OpenApi.Models;
 using Park20.Backoffice.Api.Grpc;
 using Park20.Backoffice.Infrastructure;
 using System.Data.SqlClient;
@@ -24,7 +23,6 @@ builder.Services.RegisterRepositories();
 builder.Services.AddGrpc();
 builder.Services.AddGrpcReflection();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddGrpcSwagger();
 /*builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1",

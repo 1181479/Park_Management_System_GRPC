@@ -17,6 +17,7 @@ namespace Park20.Backoffice.Core.IRepositories
         Task<bool> UpdateBulkValue(int value);
         Task<bool> UpdateNewCustomerValue(int value);
         Task<bool> UpdateCurrencyValue(int value);
+        Task<bool> UpdateParkingValue(int value);
         
     }
 }

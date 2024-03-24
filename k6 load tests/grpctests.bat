@@ -1,3 +1,13 @@
-k6 run grpcAllParks.js --out web-dashboard=export=grpcAllParks-test-report.html
-k6 run grpcPartialParks.js --out web-dashboard=export=grpcPartialParks-test-report.html
-k6 run grpcCreateUser.js --out web-dashboard=export=grpcCreateUser-test-report.html
+k6 run grpcAllParks.js
+timeout /t 60
+k6 run grpcPartialParks.js
+timeout /t 60
+k6 run grpcCreateUser.js
+timeout /t 60
+k6 run grpcAllParksClientStream.js
+timeout /t 60
+k6 run grpcAllParksServerStream.js
+timeout /t 60
+k6 run grpcAllParksTwoSidedStream.js
+timeout /t 60
+k6 run grpcUpdateParkingValue.js

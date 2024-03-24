@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -9,8 +9,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.61.0" />
+    <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.61.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.62.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
+
+	<ItemGroup>
+		<Protobuf Include="Protos\Objects\payment.proto">
+			<ProtoRoot>Protos\</ProtoRoot>
+			<GrpcServices>Client</GrpcServices>
+		</Protobuf>
+		<Protobuf Include="Protos\Services\paymentgrpc.proto">
+			<ProtoRoot>Protos\</ProtoRoot>
+			<GrpcServices>Server</GrpcServices>
+		</Protobuf>
+	</ItemGroup>
 
 </Project>
