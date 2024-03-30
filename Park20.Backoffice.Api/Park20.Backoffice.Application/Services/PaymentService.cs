@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.WellKnownTypes;
+using Grpc.Core;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Configuration;
 using Park20.Backoffice.Core.Domain;
@@ -9,6 +10,7 @@ using Park20.Backoffice.Core.IRepositories;
 using Park20.Backoffice.Core.IServices;
 using PaymentClient;
 using Protos;
+using static PaymentClient.PaymentGrpc;
 
 namespace Park20.Backoffice.Application.Services
 {
@@ -25,6 +27,7 @@ namespace Park20.Backoffice.Application.Services
         private readonly IParkyCoinsConfigurationRepository _parkyCoinsConfigurationRepository;
         private readonly IConfiguration _configuration;
         private readonly GrpcChannel channel;
+        private readonly PaymentGrpcClient client;
         public PaymentService(IPaymentRepository paymentRepository, IInvoiceRepository invoiceRepository, IConfiguration configuration, IParkRepository parkRepository,
             IVehicleRepository vehicleRepository, IParkLogRepository parkLogRepository, IParkyWalletRepository parkyWalletRepository,
             IUserRepository userRepository, IParkyCoinsConfigurationRepository parkyCoinsConfigurationRepository)
@@ -41,6 +44,7 @@ namespace Park20.Backoffice.Application.Services
             var config = _configuration.GetSection("PaymentEndpoints");
             var baseUrl = config["PaymentSimulatorBaseUrl"];
             channel = GrpcChannel.ForAddress(baseUrl);
+            client = new PaymentGrpc.PaymentGrpcClient(channel);
         }
 
         #region Make Payment
@@ -239,15 +243,44 @@ namespace Park20.Backoffice.Application.Services
 
         #region Api Calls
 
+        //res = (await client.ProcessPaymentAsync(new PaymentRequest { Amount = (double)totalCost, Token = token, FieldMask = fieldMask })).Result; //Unary communication
+        /*var stream = client.ProcessPaymentClientStream();
+        await stream.RequestStream.WriteAsync(new PaymentRequest { Amount = (double)totalCost, Token = token, FieldMask = fieldMask }); //Client sided stream
+        await stream.RequestStream.CompleteAsync();
+        res = (await stream.ResponseAsync).Result;*/
+        /*using (var call = client.ProcessPaymentServerStream(new PaymentRequest { Amount = (double)totalCost, Token = token, FieldMask = fieldMask }))
+        {
+            var responseStream = call.ResponseStream;
+            while (await responseStream.MoveNext())         //Server sided stream
+            {
+                res = responseStream.Current.Result;
+            }
+        }*/
         private async Task<bool> SimulatePayment(string token, decimal totalCost)
         {
-            var client = new PaymentGrpc.PaymentGrpcClient(channel);
+            bool res = false;
             var fieldMask = FieldMask.FromFieldNumbers<PaymentResponse>(1);
+            var requestStream = client.ProcessPaymentTwoSideStream();
             DateTime startTime = DateTime.Now;
-            bool res = (await client.ProcessPaymentAsync(new Protos.PaymentRequest { Amount = (double)totalCost, Token = token, FieldMask = fieldMask })).Result;
-            DateTime endTime = DateTime.Now;
-            TimeSpan duration = endTime - startTime;
-            durations.Add(duration.TotalMilliseconds - 1000);
+            var responseTask = Task.Run(async () =>
+            {
+                await foreach (var response in requestStream.ResponseStream.ReadAllAsync())
+                {
+                    res = response.Result;
+                    DateTime endTime = DateTime.Now;
+                    TimeSpan duration = endTime - startTime;
+                    durations.Add(duration.TotalMilliseconds - 3000);
+                }
+            });
+
+            for (int i = 0; i < 3; i++)
+            {
+                startTime = DateTime.Now;
+                await requestStream.RequestStream.WriteAsync(new PaymentRequest { Amount = (double)totalCost, Token = token, FieldMask = fieldMask });
+            }
+
+            await requestStream.RequestStream.CompleteAsync();
+            await responseTask;
             return res;
         }
 
@@ -257,17 +290,18 @@ namespace Park20.Backoffice.Application.Services
         public void PrintMetrics()
         {
             double sum = 0;
+            durations.Sort();
             foreach (var duration in durations)
             {
                 sum += duration;
             }
             if (durations.Count > 0)
             {
-                double avg = sum / durations.Count;
                 double min = durations.First();
                 double max = durations.Last();
+                double avg = sum / durations.Count;
                 double median = durations.Count % 2 == 0 ?
-                    (durations[durations.Count / 2 - 1] + durations[durations.Count / 2]) / 2 :
+                    (durations[durations.Count / 2 - 1] + durations[durations.Count / 2]) / 2.0 :
                     durations[durations.Count / 2];
 
                 double p90 = durations[(int)Math.Ceiling(0.9 * durations.Count) - 1];

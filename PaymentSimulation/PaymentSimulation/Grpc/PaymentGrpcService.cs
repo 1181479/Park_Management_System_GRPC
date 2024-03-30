@@ -37,5 +37,44 @@ namespace PaymentSimulation.Grpc
             request.FieldMask.Merge(Mapper.MapPaymentReponse(_paymentService.ProcessPayment(Mapper.Map(request))), response);
             return Task.FromResult(response);
         }
+
+        public override Task<PaymentResponse> ProcessPaymentClientStream(IAsyncStreamReader<Protos.PaymentRequest> requestStream, ServerCallContext context)
+        {
+            PaymentResponse response = new();
+            while (requestStream.MoveNext().Result)
+            {
+                var request = requestStream.Current;
+
+                if (request == null)
+                {
+                    throw new RpcException(new Status(StatusCode.InvalidArgument, "Empty request received."));
+                }
+                request.FieldMask.Merge(Mapper.MapPaymentReponse(_paymentService.ProcessPayment(Mapper.Map(request))), response);
+            }
+            return Task.FromResult(response);
+        }
+
+        public override async Task ProcessPaymentServerStream(Protos.PaymentRequest request, IServerStreamWriter<PaymentResponse> responseStream, ServerCallContext context)
+        {
+            PaymentResponse response = new();
+            request.FieldMask.Merge(Mapper.MapPaymentReponse(_paymentService.ProcessPayment(Mapper.Map(request))), response);
+            await responseStream.WriteAsync(response);
+        }
+
+        public override async Task ProcessPaymentTwoSideStream(IAsyncStreamReader<Protos.PaymentRequest> requestStream, IServerStreamWriter<PaymentResponse> responseStream, ServerCallContext context)
+        {
+            PaymentResponse response = new();
+            while (requestStream.MoveNext().Result)
+            {
+                var request = requestStream.Current;
+
+                if (request == null)
+                {
+                    throw new RpcException(new Status(StatusCode.InvalidArgument, "Empty request received."));
+                }
+                request.FieldMask.Merge(Mapper.MapPaymentReponse(_paymentService.ProcessPayment(Mapper.Map(request))), response);
+            }
+            await responseStream.WriteAsync(response);
+        }
     }
 }

@@ -6,6 +6,9 @@ import "Objects/payment.proto";
 
 service PaymentGrpc {
     rpc ProcessPayment (PaymentRequest) returns (PaymentResponse); 
+    rpc ProcessPaymentClientStream (stream PaymentRequest) returns (PaymentResponse); 
+    rpc ProcessPaymentServerStream (PaymentRequest) returns (stream PaymentResponse); 
+    rpc ProcessPaymentTwoSideStream (stream PaymentRequest) returns (stream PaymentResponse); 
     rpc AddToken (AddTokenRequest) returns (AddTokenResponse);
     rpc GenerateToken (GenerateTokenRequest) returns (GenerateTokenResponse);
 }
