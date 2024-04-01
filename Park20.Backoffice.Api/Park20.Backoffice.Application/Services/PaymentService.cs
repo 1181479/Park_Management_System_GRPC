@@ -256,11 +256,7 @@ namespace Park20.Backoffice.Application.Services
                 res = responseStream.Current.Result;
             }
         }*/
-        private async Task<bool> SimulatePayment(string token, decimal totalCost)
-        {
-            bool res = false;
-            var fieldMask = FieldMask.FromFieldNumbers<PaymentResponse>(1);
-            var requestStream = client.ProcessPaymentTwoSideStream();
+        /*var requestStream = client.ProcessPaymentTwoSideStream();         //Two sided stream
             DateTime startTime = DateTime.Now;
             var responseTask = Task.Run(async () =>
             {
@@ -280,8 +276,13 @@ namespace Park20.Backoffice.Application.Services
             }
 
             await requestStream.RequestStream.CompleteAsync();
-            await responseTask;
-            return res;
+            await responseTask;*/
+        private async Task<bool> SimulatePayment(string token, decimal totalCost)
+        {
+            PaymentResponse res;
+            var fieldMask = FieldMask.FromFieldNumbers<PaymentResponse>(1,2);
+            res = (await client.ProcessPaymentAsync(new PaymentRequest { Amount = (double)totalCost, Token = token, FieldMask = fieldMask })); //Unary communication
+            return res.Result;
         }
 
 

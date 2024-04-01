@@ -8,7 +8,7 @@ namespace PaymentSimulation.Services
     {
 
         static readonly List<string> tokens = [];
-        public bool ProcessPayment(PaymentRequest paymentRequest)//, out string receipt, out string confirmation)
+        public ProcessPaymentResult ProcessPayment(PaymentRequest paymentRequest)//, out string receipt, out string confirmation)
         {
             bool token = FindToken(paymentRequest.Token);
             bool paymentSuccessful = SimulatePaymentProcessing(paymentRequest, token);
@@ -16,18 +16,21 @@ namespace PaymentSimulation.Services
             if (paymentSuccessful)
             {
                 //receipt = GeneratePaymentReceipt(paymentRequest);
-                //confirmation = GenerateConfirmation(paymentRequest, user);
+                string confirmation = GenerateConfirmation(paymentRequest, paymentRequest.Token);
                 Console.WriteLine("Payment Successful");
-                return true;
+                return new ProcessPaymentResult(true, confirmation);
             }
             else
             {
                 //receipt = null;
                 //confirmation = null;
                 Console.WriteLine("Payment Failed");
-                return false;
+                return new ProcessPaymentResult(false, "Payment Failed");
             }
+
         }
+
+        public record ProcessPaymentResult(bool succesful, string confirmation);
 
         public TokenResponse GenerateToken(GenerateTokenRequest request)
         {

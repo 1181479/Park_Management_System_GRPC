@@ -2,6 +2,7 @@
 using Google.Protobuf;
 using PaymentSimulation.Models;
 using Protos;
+using static PaymentSimulation.Services.PaymentService;
 
 namespace PaymentSimulation.ProtoMap
 {
@@ -40,12 +41,13 @@ namespace PaymentSimulation.ProtoMap
                 Result = v
             };
         }
-        
-        public static PaymentResponse MapPaymentReponse(bool v)
+
+        public static PaymentResponse MapPaymentReponse(ProcessPaymentResult v)
         {
             return new PaymentResponse
             {
-                Result = v
+                Result = v.succesful,
+                Confirmation = v.confirmation
             };
         }
     }

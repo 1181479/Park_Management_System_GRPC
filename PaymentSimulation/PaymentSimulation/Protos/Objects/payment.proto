@@ -11,6 +11,7 @@ message PaymentRequest {
 
 message PaymentResponse {
     bool result = 1;
+    string confirmation = 2;
 }
 
 message AddTokenRequest {
