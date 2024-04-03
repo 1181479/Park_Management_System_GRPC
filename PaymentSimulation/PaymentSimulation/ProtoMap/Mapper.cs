@@ -47,7 +47,7 @@ namespace PaymentSimulation.ProtoMap
             return new PaymentResponse
             {
                 Result = v.succesful,
-                Confirmation = v.confirmation
+                ConfirmationString = v.confirmation
             };
         }
     }
