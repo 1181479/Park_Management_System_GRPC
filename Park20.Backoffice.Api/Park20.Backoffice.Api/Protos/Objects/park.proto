@@ -45,27 +45,27 @@ message ParkCheckRequest {
 }
 
 message PriceTable {
-  string park_name =   1;
-  double night_fee =   2;
-  google.protobuf.Timestamp initial_date =   3;
+  optional string park_name =   1;
+  optional double night_fee =   2;
+  optional google.protobuf.Timestamp initial_date =   3;
   repeated LinePriceTable price_lines =   4;
 }
 
 message LinePriceTable {
-  Period period =   1;
+  optional Period period =   1;
 }
 
 message Period {
-  google.protobuf.Timestamp initial_time =   1;
-  google.protobuf.Timestamp final_time =   2;
+  optional google.protobuf.Timestamp initial_time =   1;
+  optional google.protobuf.Timestamp final_time =   2;
   repeated Fractions fraction_list =   3;
 }
 
 message Fractions {
-  int32 order =   1;
-  int32 minutes =   2;
-  VehicleType vehicle_type =   3;
-  double price =   4;
+  optional int32 order =   1;
+  optional int32 minutes =   2;
+  optional VehicleType vehicle_type =   3;
+  optional double price =   4;
 }
 
 message TaskResult {
