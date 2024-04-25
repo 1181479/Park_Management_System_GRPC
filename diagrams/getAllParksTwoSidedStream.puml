@@ -1,0 +1,12 @@
+@startuml getAllParksTwoSidedStream
+User -> ParkGrpcService: Sends RPC Request
+loop While new Request Recieved
+ParkGrpcService -> ParkService: Requests Parks
+ParkService -> ParkRepository: Get All Parks
+ParkService <- ParkRepository: Returns Found Parks
+ParkGrpcService <- ParkService: Returns Parks
+ParkGrpcService -> Mapper: Maps Parks to Proto ListPark
+ParkGrpcService -> ParkGrpcService: Applies FieldMask
+User <- ParkGrpcService: Writes Async Result
+end
+@enduml

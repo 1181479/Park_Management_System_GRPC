@@ -1,0 +1,23 @@
+@startuml leaveParkClientStream
+User -> VehicleGrpcService: Sends RPC Request
+VehicleGrpcService -> ParkLogService: Stop Counting Time Operation
+ParkLogService -> ParkLogService: Create Park Log
+ParkLogService -> ParkLogMapper: Map to Domain
+ParkLogService <- ParkLogMapper: Returns Result
+ParkLogService -> ParkLogRepository: Create Park Log
+VehicleGrpcService -> PaymentService: Calculate Cost
+VehicleGrpcService <- PaymentService: Returns Cost
+VehicleGrpcService -> PaymentService: Make Payment
+PaymentService -> PaymentService: Pay with Parky Coins
+alt (totalCost - parkyCoinsSpent) > 0
+    PaymentService -> PaymentService: Simulate Payment
+    PaymentService -> PaymentServiceApplication: Send Async RPC Request
+    PaymentService <- PaymentServiceApplication: Returns Result
+    PaymentService -> PaymentService: Complete Async
+    PaymentService -> PaymentService: Returns Result
+end
+PaymentService -> InvoiceRepository: Create Invoice
+VehicleGrpcService -> VehicleGrpcService: Creates Payment Summary
+VehicleGrpcService -> VehicleGrpcService: Applies Field Mask
+User <- VehicleGrpcService: Returns Result
+@enduml

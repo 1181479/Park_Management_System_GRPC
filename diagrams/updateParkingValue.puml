@@ -1,0 +1,9 @@
+@startuml updateParkingValue
+User -> ParkyWalletGrpcService: Sends HTTP ParkyWalletGrpcService Request
+ParkyWalletGrpcService -> ParkyWalletService: Update Parking Value
+ParkyWalletService -> ParkyCoinsConfigurationRepository: Checks If Email Exists
+ParkyWalletService <- ParkyCoinsConfigurationRepository: Returns Result
+ParkyWalletGrpcService <- ParkyWalletService: Returns Result
+ParkyWalletGrpcService -> ParkyWalletGrpcService: Applies Field Mask
+User <- ParkyWalletGrpcService: Returns Result
+@enduml

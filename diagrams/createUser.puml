@@ -1,0 +1,26 @@
+@startuml createUser
+User -> UserGrpcService: Sends RPC Request
+UserGrpcService -> UserService: Checks If Email Exists
+UserService -> UserRepository: Checks If Email Exists
+UserService <- UserRepository: Returns Result
+UserGrpcService <- UserService: Returns Result
+alt Email Exists
+    User <- UserGrpcService: Returns Empty Result
+else Email Does Not Exist
+    UserGrpcService -> Mapper: Maps to Proto Customer
+    UserGrpcService <- Mapper: Returns Proto Customer
+    UserGrpcService -> UserService: Add Customer
+    UserService -> ParkyWalletService: Create Parky Wallet
+    ParkyWalletService -> ParkyWalletRepository: Creates Parky Wallet
+    ParkyWalletService <- ParkyWalletRepository: Returns Created Parky Wallet
+    UserService <- ParkyWalletService: Returns Created Parky Wallet
+    UserService -> UserService: Sets Parky Wallet ID on User
+    UserService -> UserRepository: Creates User
+    UserService <- UserRepository: Returns Created User
+    UserGrpcService <- UserService: Returns User
+    UserGrpcService -> Mapper: Maps to Proto CreateCustomerResult
+    UserGrpcService <- Mapper: Returns Proto CreateCustomerResult
+    UserGrpcService -> UserGrpcService: Applies FieldMask
+    User <- UserGrpcService: Returns Result
+end
+@enduml
