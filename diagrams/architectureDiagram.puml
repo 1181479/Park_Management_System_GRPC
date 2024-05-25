@@ -1,0 +1,43 @@
+@startuml
+
+package "Backoffice Architecture" {
+    package "API"{
+        package "Controllers"{
+            [BackofficeControllers]
+        }
+    }
+    package "Application" {
+        package "Services"{
+            [BackofficeServices]
+        }
+        package "Mappers"{
+            [BackofficeMappers]
+        }
+    }
+    package "Core" {
+        package "Domain"{
+            [Entities]
+        }
+        package "Dtos"{
+            [DTOs]
+        }
+        package "IRepositories"{
+            [RepositoryInterfaces]
+        }
+        package "IServices"{
+            [ServiceInterfaces]
+        }
+    }
+    package "DatabaseManagement"{
+        [Queries]
+    }
+    package "Infrastructure"{
+        [Repositories]
+    }
+    API --> Application
+    Application --> Core
+    Core --> DatabaseManagement
+    Core --> Infrastructure
+}
+
+@enduml
