@@ -4,7 +4,11 @@ package "Backoffice Architecture" {
     package "API"{
         package "Grpc"{
             [gRPCControllers]
+        }
+        package "Protos"{
             [Protobuf Objects]
+        }
+        package "ProtoMap"{
             [Protobuf Mappers]
         }
     }
