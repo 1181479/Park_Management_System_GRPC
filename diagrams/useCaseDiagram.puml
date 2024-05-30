@@ -2,7 +2,7 @@
 left to right direction
 actor "UnRegisteredUser" as unuser
 actor "RegisteredUser" as user
-actor "Comercial Manager" as manager
+actor "Commercial Manager" as manager
 actor "Park Manager" as park
 
 package "Parking Management System" {
