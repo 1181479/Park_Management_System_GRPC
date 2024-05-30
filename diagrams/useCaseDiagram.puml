@@ -1,0 +1,62 @@
+@startuml usercase diagram
+left to right direction
+actor "UnRegisteredUser" as unuser
+actor "RegisteredUser" as user
+actor "Comercial Manager" as manager
+actor "Park Manager" as park
+
+package "Parking Management System" {
+    usecase "User Registration" as UC1
+    usecase "Manage Payment Methods" as UC2
+    usecase "Manage Vehicles" as UC3
+    usecase "List Nearby Parks" as UC4
+    usecase "Simulate Barrier Opening" as UC5
+    usecase "Simulate Barrier Closing" as UC6
+    usecase "Display Entry/Exit Messages" as UC7
+    usecase "Disallow Unsuported Vehicle Park Entry" as UC8
+    usecase "Disallow Unregistered/Blocked User Park Entry" as UC9
+    usecase "Disallow Park Entry if full" as UC9
+    usecase "Manage Parking Duration" as UC10
+    usecase "Show Parking Capacity" as UC11
+    usecase "Reade License Plates" as UC12
+    usecase "Display Parking Price" as UC13
+    usecase "Filter Nearby Parks" as UC14
+    usecase "Manage ParkyWallet" as UC15
+    usecase "Manage Price Tables" as UC16
+    usecase "Enable/Disable Parking Spot" as UC17
+    usecase "Award Parky Coins on Registration and Hourly Parking" as UC18
+    usecase "Manage Parky Coin Award Values" as UC19
+    usecase "Generate Parky Coin Usage Reports" as UC20
+    usecase "Manage Account" as UC21
+    usecase "Register Pending Debts" as UC22
+    usecase "Select Payment Method" as UC23
+    usecase "Allow Exit Without Payment" as UC24
+}
+
+unuser --> UC1
+user --> UC2
+user --> UC3
+user --> UC4
+user --> UC5
+user --> UC6
+user --> UC7
+manager --> UC8
+manager --> UC9
+manager --> UC10
+manager --> UC11
+user --> UC11
+manager --> UC12
+user --> UC13
+user --> UC14
+user --> UC15
+manager --> UC16
+park --> UC17
+manager --> UC18
+manager --> UC19
+manager --> UC20
+user --> UC21
+manager --> UC22
+user --> UC23
+user --> UC24
+
+@enduml
