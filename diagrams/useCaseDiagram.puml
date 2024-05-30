@@ -10,15 +10,8 @@ package "Parking Management System" {
     usecase "Manage Payment Methods" as UC2
     usecase "Manage Vehicles" as UC3
     usecase "List Nearby Parks" as UC4
-    usecase "Simulate Barrier Opening" as UC5
-    usecase "Simulate Barrier Closing" as UC6
-    usecase "Display Entry/Exit Messages" as UC7
-    usecase "Disallow Unsuported Vehicle Park Entry" as UC8
-    usecase "Disallow Unregistered/Blocked User Park Entry" as UC9
-    usecase "Disallow Park Entry if full" as UC9
     usecase "Manage Parking Duration" as UC10
     usecase "Show Parking Capacity" as UC11
-    usecase "Reade License Plates" as UC12
     usecase "Display Parking Price" as UC13
     usecase "Filter Nearby Parks" as UC14
     usecase "Manage ParkyWallet" as UC15
@@ -33,6 +26,19 @@ package "Parking Management System" {
     usecase "Allow Exit Without Payment" as UC24
 }
 
+package "License Plate Reader"{
+    usecase "Read License Plates" as UC12
+}
+
+package "Barrier System" {
+    usecase "Simulate Barrier Opening" as UC5
+    usecase "Simulate Barrier Closing" as UC6
+    usecase "Display Entry/Exit Messages" as UC7
+    usecase "Disallow Unsuported Vehicle Park Entry" as UC8
+    usecase "Disallow Unregistered/Blocked User Park Entry" as UC9
+    usecase "Disallow Park Entry if full" as UC25
+}
+
 unuser --> UC1
 user --> UC2
 user --> UC3
@@ -40,23 +46,24 @@ user --> UC4
 user --> UC5
 user --> UC6
 user --> UC7
-manager --> UC8
-manager --> UC9
-manager --> UC10
-manager --> UC11
+UC8 <-- manager 
+UC9 <-- manager 
+UC10 <-- manager 
+UC11 <-- manager 
 user --> UC11
-manager --> UC12
+UC12 <-- manager 
 user --> UC13
 user --> UC14
 user --> UC15
-manager --> UC16
+UC16 <-- manager 
 park --> UC17
-manager --> UC18
-manager --> UC19
-manager --> UC20
+UC18 <-- manager 
+UC19 <-- manager 
+UC20 <-- manager 
 user --> UC21
-manager --> UC22
+UC22 <-- manager 
 user --> UC23
 user --> UC24
+UC25 <-- manager 
 
 @enduml
