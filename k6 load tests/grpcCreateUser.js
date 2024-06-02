@@ -26,10 +26,9 @@ export const options = {
     "p(99.99)",
     "count",
   ],
+  duration: '20m',
   summaryTimeUnit: "ms",
-  stages: [
-    { duration: "1m", target: 1 },
-  ],
+  iterations: 3000
 };
 
 export default () => {
@@ -38,11 +37,11 @@ export default () => {
   // Create the payload with the fields and field mask
   let value = randomString(20);
   const req = {
-    Name: value,
-    Password: value,
-    Email: value,
-    Username: value,
-    fieldMask: "Name,Email,Username",
+    name: value,
+    password: value,
+    email: value,
+    username: value,
+    fieldMask: "name,email,username",
   };
 
   const response = client.invoke("Proto.UserGrpc/AddCustomer", req);

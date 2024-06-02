@@ -292,10 +292,16 @@ namespace Park20.Backoffice.Application.Services
         {
             double sum = 0;
             durations.Sort();
+            string filePath = "payment.csv";
+            string content= "req;time";
+            int i = 0;
             foreach (var duration in durations)
             {
+                i++;
                 sum += duration;
+                content += "\n" + i + ";" + duration;
             }
+            File.WriteAllText(filePath, content);
             if (durations.Count > 0)
             {
                 double min = durations.First();

@@ -25,8 +25,9 @@ export const options = {
     "p(99.99)",
     "count",
   ],
+  duration: '20m',
   summaryTimeUnit: "ms",
-  stages: [{ duration: "1m", target: 1 }],
+  iterations: 3000
 };
 
 export default () => {
@@ -39,7 +40,6 @@ export default () => {
   stream.on("end", function () {
     // The server has finished sending
     client.close();
-    console.log("All done");
   });
 
   // send a message to the server

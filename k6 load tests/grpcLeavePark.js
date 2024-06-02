@@ -40,8 +40,9 @@ export const options = {
     "p(99.99)",
     "count",
   ],
+  duration: '2h',
   summaryTimeUnit: "ms",
-  stages: [{ duration: "1m", target: 1 }],
+  iterations: 3000
 };
 
 export function setup() {
