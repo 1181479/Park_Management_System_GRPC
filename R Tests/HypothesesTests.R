@@ -1,4 +1,5 @@
-files <- list.files(path = "D:/isep/3ano/dimei/test", pattern = "\\.csv$", full.names = TRUE)
+library(readr)
+files <- list.files(path = "./", pattern = "\\.csv$", full.names = TRUE)
 
 for (file in files) {
   file_name <- tools::file_path_sans_ext(basename(file))
@@ -19,49 +20,6 @@ rm(file)
 rm(files)
 rm(file_name)
 
-graphqlLeavePark <- graphqlLeavePark[1:3000]
-grpcLeavePark <- grpcLeavePark[1:3000]
-grpcLeaveParkClientStream <- grpcLeaveParkClientStream[1:3000]
-grpcLeaveParkServerStream <- grpcLeaveParkServerStream[1:3000]
-grpcLeaveParkServerStreamPayment <- grpcLeaveParkServerStreamPayment[1:3000]
-grpcLeaveParkTwoSideStream <- grpcLeaveParkTwoSideStream[1:3000]
-
-
-#Average
-mean(graphqlLeaveParkPayment)
-mean(grpcLeaveParkPayment)
-mean(grpcLeaveParkClientStreamPayment)
-mean(grpcLeaveParkServerStreamPayment)
-mean(grpcLeaveParkTwoSideStreamPayment)
-
-#Maximum
-max(graphqlLeaveParkPayment)
-max(grpcLeaveParkPayment)
-max(grpcLeaveParkClientStreamPayment)
-max(grpcLeaveParkServerStreamPayment)
-max(grpcLeaveParkTwoSideStreamPayment)
-
-#Median
-median(graphqlLeaveParkPayment)
-median(grpcLeaveParkPayment)
-median(grpcLeaveParkClientStreamPayment)
-median(grpcLeaveParkServerStreamPayment)
-median(grpcLeaveParkTwoSideStreamPayment)
-
-#Minimum
-min(graphqlLeaveParkPayment)
-min(grpcLeaveParkPayment)
-min(grpcLeaveParkClientStreamPayment)
-min(grpcLeaveParkServerStreamPayment)
-min(grpcLeaveParkTwoSideStreamPayment)
-
-#90th Percentile 	95th Percentile
-quantile(graphqlLeaveParkPayment, probs = seq(.9, .95, by = .05))
-quantile(grpcLeaveParkPayment, probs = seq(.9, .95, by = .05))
-quantile(grpcLeaveParkClientStreamPayment, probs = seq(.9, .95, by = .05))
-quantile(grpcLeaveParkServerStreamPayment, probs = seq(.9, .95, by = .05))
-quantile(grpcLeaveParkTwoSideStreamPayment, probs = seq(.9, .95, by = .05))
-
 library(nortest) #LILLIEFORS TEST
 library(moments) #SKEWNESS TEST
 
@@ -72,6 +30,49 @@ for(value in ls()){
   assign(paste0(value, "Assimtry"), skewness(get(value)), envir = .GlobalEnv)
   rm(value)
 }
+
+graphqlLeavePark <- graphqlLeavePark[1:3000]
+grpcLeavePark <- grpcLeavePark[1:3000]
+grpcLeaveParkClientStream <- grpcLeaveParkClientStream[1:3000]
+grpcLeaveParkServerStream <- grpcLeaveParkServerStream[1:3000]
+grpcLeaveParkServerStreamPayment <- grpcLeaveParkServerStreamPayment[1:3000]
+grpcLeaveParkTwoSideStream <- grpcLeaveParkTwoSideStream[1:3000]
+
+
+#Average
+graphqlLeaveParkPaymentMean <- mean(graphqlLeaveParkPayment)
+grpcLeaveParkPaymentMean <- mean(grpcLeaveParkPayment)
+grpcLeaveParkClientStreamPaymentMean <- mean(grpcLeaveParkClientStreamPayment)
+grpcLeaveParkServerStreamPaymentMean <- mean(grpcLeaveParkServerStreamPayment)
+grpcLeaveParkTwoSideStreamPaymentMean <- mean(grpcLeaveParkTwoSideStreamPayment)
+
+#Maximum
+graphqlLeaveParkPaymentMax <- max(graphqlLeaveParkPayment)
+grpcLeaveParkPaymentMax <- max(grpcLeaveParkPayment)
+grpcLeaveParkClientStreamPaymentMax <- max(grpcLeaveParkClientStreamPayment)
+grpcLeaveParkServerStreamPaymentMax <- max(grpcLeaveParkServerStreamPayment)
+grpcLeaveParkTwoSideStreamPaymentMax <- max(grpcLeaveParkTwoSideStreamPayment)
+
+#Median
+graphqlLeaveParkPaymentMedian <- median(graphqlLeaveParkPayment)
+grpcLeaveParkPaymentMedian <- median(grpcLeaveParkPayment)
+grpcLeaveParkClientStreamPaymentMedian <- median(grpcLeaveParkClientStreamPayment)
+grpcLeaveParkServerStreamPaymentMedian <- median(grpcLeaveParkServerStreamPayment)
+grpcLeaveParkTwoSideStreamPaymentMedian <- median(grpcLeaveParkTwoSideStreamPayment)
+
+#Minimum
+graphqlLeaveParkPaymentMin <- min(graphqlLeaveParkPayment)
+grpcLeaveParkPaymentMin <- min(grpcLeaveParkPayment)
+grpcLeaveParkClientStreamPaymentMin <- min(grpcLeaveParkClientStreamPayment)
+grpcLeaveParkServerStreamPaymentMin <- min(grpcLeaveParkServerStreamPayment)
+grpcLeaveParkTwoSideStreamPaymentMin <- min(grpcLeaveParkTwoSideStreamPayment)
+
+#90th Percentile 	95th Percentile
+graphqlLeaveParkPaymentPercentiles <- quantile(graphqlLeaveParkPayment, probs = seq(.9, .95, by = .05))
+grpcLeaveParkPaymentPercentiles <- quantile(grpcLeaveParkPayment, probs = seq(.9, .95, by = .05))
+grpcLeaveParkClientStreamPaymentPercentiles <- quantile(grpcLeaveParkClientStreamPayment, probs = seq(.9, .95, by = .05))
+grpcLeaveParkServerStreamPaymentPercentiles <- quantile(grpcLeaveParkServerStreamPayment, probs = seq(.9, .95, by = .05))
+grpcLeaveParkTwoSideStreamPaymentPercentiles <- quantile(grpcLeaveParkTwoSideStreamPayment, probs = seq(.9, .95, by = .05))
 
 # GET ALL PARKS
 grpcAllParks_graphqlAllParks <- wilcox.test(grpcAllParks,graphqlAllParks, paired=FALSE)$p.value
@@ -100,7 +101,7 @@ grpcLeaveParkClientStreamPayment_graphqlLeaveParkPayment <- wilcox.test(grpcLeav
 grpcLeaveParkServerStreamPayment_graphqlLeaveParkPayment <- wilcox.test(grpcLeaveParkServerStreamPayment,graphqlLeaveParkPayment, paired=FALSE)$p.value
 grpcLeaveParkTwoSideStreamPayment_graphqlLeaveParkPayment <- wilcox.test(grpcLeaveParkTwoSideStreamPayment,graphqlLeaveParkPayment, paired=FALSE)$p.value
 
-files <- list.files(path = "D:/isep/3ano/dimei/test", pattern = "\\.csv$", full.names = TRUE)
+files <- list.files(path = "./", pattern = "\\.csv$", full.names = TRUE)
 
 for (file in files) {
   for(value in ls()){
@@ -113,4 +114,4 @@ rm(file)
 rm(files)
 rm(value)
 
-save(list = ls(), file = "D:/isep/3ano/dimei/test/results.RData")
+save(list = ls(), file = "./results.RData")
