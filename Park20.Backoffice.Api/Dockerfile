@@ -11,7 +11,8 @@ RUN dotnet publish -c Release -o out
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /App
-COPY ./certificate.pfx /App/
+COPY /Park20.Backoffice.Api/sql/db.sql /App/sql/db.sql
+COPY /Park20.Backoffice.Api/certificate.pfx /App/
 COPY --from=build-env /App/out .
 
-ENTRYPOINT ["dotnet", "PaymentSimulation.dll"]
+ENTRYPOINT ["dotnet", "Park20.Backoffice.Api.dll"]

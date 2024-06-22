@@ -42,8 +42,19 @@ namespace Park20.Backoffice.Application.Services
             _userRepository = userRepository;
             _parkyCoinsConfigurationRepository = parkyCoinsConfigurationRepository;
             var config = _configuration.GetSection("PaymentEndpoints");
+
+            var httpHandler = new HttpClientHandler();
+
+            // Load the certificate
+            httpHandler.ServerCertificateCustomValidationCallback = (HttpRequestMessage, cert, X509Chain, SslPolicyErrors) => true;
+
+            //httpHandler.ClientCertificates.Add(new System.Security.Cryptography.X509Certificates.X509Certificate2(certPath));
+
             var baseUrl = config["PaymentSimulatorBaseUrl"];
-            channel = GrpcChannel.ForAddress(baseUrl);
+            channel = GrpcChannel.ForAddress(baseUrl, new GrpcChannelOptions
+            {
+                HttpHandler = httpHandler
+            });
             client = new PaymentGrpc.PaymentGrpcClient(channel);
         }
 
@@ -88,12 +99,87 @@ namespace Park20.Backoffice.Application.Services
             var parkyCoinsSpent = await PayWithParkyCoins(licensePlate, totalCost);
 
             var missingPayment = totalCost - parkyCoinsSpent;
-
+            missingPayment = 10;
             bool isSucessfull = missingPayment > 0 ? false : true;
 
             if (!isSucessfull)
             {
                 isSucessfull = await SimulatePayment(token, missingPayment);
+            }
+
+            await _invoiceRepository.CreateInvoice(new Invoice(totalCost, isSucessfull), licensePlate);
+
+            return new HibridPayment(parkyCoinsSpent, missingPayment, totalCost, isSucessfull);
+        }
+
+        public async Task<HibridPayment> MakePaymentClientStream(string licensePlate, decimal totalCost)
+        {
+            var token = await GetTokenFromPaymentMethodByLicensePlate(licensePlate);
+
+            //if (string.IsNullOrWhiteSpace(token))
+            //{
+            //    return default;
+            //}
+
+            var parkyCoinsSpent = await PayWithParkyCoins(licensePlate, totalCost);
+
+            var missingPayment = totalCost - parkyCoinsSpent;
+            missingPayment = 10;
+            bool isSucessfull = missingPayment > 0 ? false : true;
+
+            if (!isSucessfull)
+            {
+                isSucessfull = await SimulatePaymentClientStream(token, missingPayment);
+            }
+
+            await _invoiceRepository.CreateInvoice(new Invoice(totalCost, isSucessfull), licensePlate);
+
+            return new HibridPayment(parkyCoinsSpent, missingPayment, totalCost, isSucessfull);
+        }
+
+        public async Task<HibridPayment> MakePaymentServerStream(string licensePlate, decimal totalCost)
+        {
+            var token = await GetTokenFromPaymentMethodByLicensePlate(licensePlate);
+
+            //if (string.IsNullOrWhiteSpace(token))
+            //{
+            //    return default;
+            //}
+
+            var parkyCoinsSpent = await PayWithParkyCoins(licensePlate, totalCost);
+
+            var missingPayment = totalCost - parkyCoinsSpent;
+            missingPayment = 10;
+            bool isSucessfull = missingPayment > 0 ? false : true;
+
+            if (!isSucessfull)
+            {
+                isSucessfull = await SimulatePaymentServerStream(token, missingPayment);
+            }
+
+            await _invoiceRepository.CreateInvoice(new Invoice(totalCost, isSucessfull), licensePlate);
+
+            return new HibridPayment(parkyCoinsSpent, missingPayment, totalCost, isSucessfull);
+        }
+
+        public async Task<HibridPayment> MakePaymentTwoSidedStream(string licensePlate, decimal totalCost)
+        {
+            var token = await GetTokenFromPaymentMethodByLicensePlate(licensePlate);
+
+            //if (string.IsNullOrWhiteSpace(token))
+            //{
+            //    return default;
+            //}
+
+            var parkyCoinsSpent = await PayWithParkyCoins(licensePlate, totalCost);
+
+            var missingPayment = totalCost - parkyCoinsSpent;
+            missingPayment = 10;
+            bool isSucessfull = missingPayment > 0 ? false : true;
+
+            if (!isSucessfull)
+            {
+                isSucessfull = await SimulatePaymentTwoSidedStream(token, missingPayment);
             }
 
             await _invoiceRepository.CreateInvoice(new Invoice(totalCost, isSucessfull), licensePlate);
@@ -285,6 +371,68 @@ namespace Park20.Backoffice.Application.Services
             return res.Result;
         }
 
+        private async Task<bool> SimulatePaymentClientStream(string token, decimal totalCost)
+        {
+            // PaymentResponse res;
+            // var fieldMask = FieldMask.FromFieldNumbers<PaymentResponse>(1);
+            // var stream = client.ProcessPaymentClientStream();
+            // DateTime startTime = DateTime.Now;
+            // await stream.RequestStream.WriteAsync(new PaymentRequest { Amount = (double)totalCost, Token = token, FieldMask = fieldMask }); //Client sided stream
+            // await stream.RequestStream.CompleteAsync();
+            // res = (await stream.ResponseAsync);
+            // DateTime endTime = DateTime.Now;
+            // TimeSpan duration = endTime - startTime;
+            // durations.Add(duration.TotalMilliseconds - 500);
+            // return res.Result;
+            return true;
+        }
+
+        private async Task<bool> SimulatePaymentServerStream(string token, decimal totalCost)
+        {
+            // PaymentResponse res = new();
+            // var fieldMask = FieldMask.FromFieldNumbers<PaymentResponse>(1);
+            // using (var call = client.ProcessPaymentServerStream(new PaymentRequest { Amount = (double)totalCost, Token = token, FieldMask = fieldMask }))
+            // {
+            //     DateTime startTime = DateTime.Now;
+            //     var responseStream = call.ResponseStream;
+            //     while (await responseStream.MoveNext())         //Server sided stream
+            //     {
+            //         res = responseStream.Current;
+            //         DateTime endTime = DateTime.Now;
+            //         TimeSpan duration = endTime - startTime;
+            //         durations.Add(duration.TotalMilliseconds - 500);
+            //     }
+            // }
+            // return res.Result;
+            return true;
+        }
+
+        private async Task<bool> SimulatePaymentTwoSidedStream(string token, decimal totalCost)
+        {
+            // PaymentResponse res = new();
+            // var fieldMask = FieldMask.FromFieldNumbers<PaymentResponse>(1);
+            // var requestStream = client.ProcessPaymentTwoSideStream();         //Two sided stream
+            // DateTime startTime = DateTime.Now;
+            // var responseTask = Task.Run(async () =>
+            // {
+            //     await foreach (var response in requestStream.ResponseStream.ReadAllAsync())
+            //     {
+            //         res = response;
+            //         DateTime endTime = DateTime.Now;
+            //         TimeSpan duration = endTime - startTime;
+            //         durations.Add(duration.TotalMilliseconds - 500);
+            //     }
+            // });
+
+            // startTime = DateTime.Now;
+            // await requestStream.RequestStream.WriteAsync(new PaymentRequest { Amount = (double)totalCost, Token = token, FieldMask = fieldMask });
+
+            // await requestStream.RequestStream.CompleteAsync();
+            // await responseTask;
+            // return res.Result;
+            return true;
+        }
+
 
         #endregion
 
@@ -292,8 +440,13 @@ namespace Park20.Backoffice.Application.Services
         {
             double sum = 0;
             durations.Sort();
-            string filePath = "payment.csv";
-            string content= "req;time";
+            string outputPath = "/App/output"; // Path inside the Docker container
+
+            // Create directory if it doesn't exist
+            Directory.CreateDirectory(outputPath);
+
+            string filePath = Path.Combine(outputPath, DateTime.Now.ToString("HHmmss") + "payment.csv");
+            string content = "req;time";
             int i = 0;
             foreach (var duration in durations)
             {
@@ -321,6 +474,7 @@ namespace Park20.Backoffice.Application.Services
                 Console.WriteLine($"p(90): {p90} milliseconds");
                 Console.WriteLine($"p(95): {p95} milliseconds");
             }
+            durations.Clear();
         }
     }
 

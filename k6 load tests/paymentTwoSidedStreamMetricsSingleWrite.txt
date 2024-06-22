@@ -1,6 +1,6 @@
-Average: 28.125242857142865 milliseconds
-Minimum: 13.991300000000024 milliseconds
-Median: 25.287450000000035 milliseconds
-Maximum: 193.77800000000002 milliseconds
-p(90): 35.20849999999996 milliseconds
-p(95): 38.4679000000001 milliseconds
+Average: 7.901610199999993 milliseconds
+Minimum: 2.78570000000002 milliseconds
+Median: 7.157499999999999 milliseconds
+Maximum: 237.8478 milliseconds
+p(90): 9.476800000000026 milliseconds
+p(95): 10.298000000000002 milliseconds

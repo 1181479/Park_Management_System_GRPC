@@ -51,6 +51,66 @@ namespace Park20.Backoffice.Api.Grpc
             }, hp);
             return Task.FromResult(hp);
         }
+        
+        public override Task<Proto.HibridPayment> LeaveParkClientStream(ParkingSpotsUpdateRequest request, ServerCallContext context)
+        {
+            _parkLogService.StopCountingTimeOperation(Mapper.Map(request.LicensePlate, request.ParkName));
+
+            var totalCost = _paymentService.CalculateCost(request.ParkName, request.LicensePlate).Result;
+
+            var payment = _paymentService.MakePayment(request.LicensePlate, totalCost).Result;
+
+            _parkLogService.UpdateAvailableParkingSpots(request.ParkName, request.LicensePlate, request.IsEntrance);
+            Proto.HibridPayment hp = new();
+            request.FieldMask.Merge(new Proto.HibridPayment
+            {
+                IsSuccessfull = payment.isSuccessfull,
+                OtherPaymentMethodAmount = ((double)payment.otherPaymentMethodAmount),
+                ParkyCoinsAmount = ((double)payment.parkyCoinsAmount),
+                TotalCost = ((double)payment.totalCost)
+            }, hp);
+            return Task.FromResult(hp);
+        }
+        
+        public override Task<Proto.HibridPayment> LeaveParkServerStream(ParkingSpotsUpdateRequest request, ServerCallContext context)
+        {
+            _parkLogService.StopCountingTimeOperation(Mapper.Map(request.LicensePlate, request.ParkName));
+
+            var totalCost = _paymentService.CalculateCost(request.ParkName, request.LicensePlate).Result;
+
+            var payment = _paymentService.MakePayment(request.LicensePlate, totalCost).Result;
+
+            _parkLogService.UpdateAvailableParkingSpots(request.ParkName, request.LicensePlate, request.IsEntrance);
+            Proto.HibridPayment hp = new();
+            request.FieldMask.Merge(new Proto.HibridPayment
+            {
+                IsSuccessfull = payment.isSuccessfull,
+                OtherPaymentMethodAmount = ((double)payment.otherPaymentMethodAmount),
+                ParkyCoinsAmount = ((double)payment.parkyCoinsAmount),
+                TotalCost = ((double)payment.totalCost)
+            }, hp);
+            return Task.FromResult(hp);
+        }
+        
+        public override Task<Proto.HibridPayment> LeaveParkTwoSidedStream(ParkingSpotsUpdateRequest request, ServerCallContext context)
+        {
+            _parkLogService.StopCountingTimeOperation(Mapper.Map(request.LicensePlate, request.ParkName));
+
+            var totalCost = _paymentService.CalculateCost(request.ParkName, request.LicensePlate).Result;
+
+            var payment = _paymentService.MakePayment(request.LicensePlate, totalCost).Result;
+
+            _parkLogService.UpdateAvailableParkingSpots(request.ParkName, request.LicensePlate, request.IsEntrance);
+            Proto.HibridPayment hp = new();
+            request.FieldMask.Merge(new Proto.HibridPayment
+            {
+                IsSuccessfull = payment.isSuccessfull,
+                OtherPaymentMethodAmount = ((double)payment.otherPaymentMethodAmount),
+                ParkyCoinsAmount = ((double)payment.parkyCoinsAmount),
+                TotalCost = ((double)payment.totalCost)
+            }, hp);
+            return Task.FromResult(hp);
+        }
 
         public override Task<VehicleResult> GetVehicleByLicencePlate(GetVehicleByLicencePlateRequest request, ServerCallContext context)
         {

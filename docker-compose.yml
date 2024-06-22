@@ -1,0 +1,57 @@
+version: '1.0'
+name: grpc-dimei
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    hostname: sqlserver
+    container_name: sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "yourStrong(!)Password"
+    ports:
+      - "1433:1433"
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "yourStrong(!)Password" -Q "SELECT 1" -b -o /dev/null
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+
+  backoffice:
+    build: ./Park20.Backoffice.Api
+    hostname: backoffice
+    container_name: backoffice
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    ports:
+      - "7000:7000"
+      - "5000:5000"
+    volumes:
+        - ./k6 load tests:/App/output
+      
+
+  paymentsystem:
+    build: ./PaymentSimulation/PaymentSimulation
+    hostname: paymentsystem
+    container_name: paymentsystem
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    ports:
+      - "7004:7004"
+      - "5004:5004"
+
+  # k6:
+  #   build:
+  #     context: ./k6 load tests
+  #     dockerfile: Dockerfile
+  #   container_name: k6_runner
+  #   volumes:
+  #     - ./k6 load tests:/app
+#     networks:
+#       - my_network
+
+# networks:
+#   my_network:

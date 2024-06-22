@@ -22,7 +22,7 @@ backofficeClient.load(
     // "../PaymentSimulation/PaymentSimulation/Protos/Services",
     // "../PaymentSimulation/PaymentSimulation/Protos/",
   ],
-  // "paymentgrpc.proto",
+  "paymentgrpc.proto",
   "vehiclegrpc.proto"
 );
 
@@ -74,7 +74,7 @@ export default () => {
     fieldMask: "isSuccessfull,parkyCoinsAmount,otherPaymentMethodAmount,totalCost",
   };
 
-  const response = backofficeClient.invoke("Proto.VehicleGrpc/LeavePark", req);
+  const response = backofficeClient.invoke("Proto.VehicleGrpc/LeaveParkTwoSidedStream", req);
 
   check(response, {
     "status is OK": (r) => r && r.status === grpc.StatusOK,
@@ -82,6 +82,11 @@ export default () => {
 
   paymentClient.close();
 };
+
+export function teardown(data) {
+  backofficeClient.connect("localhost:7000", {});
+  backofficeClient.invoke("Proto.PaymentGrpc/PrintMetrics", {});
+}
 
 export function handleSummary(data) {
   return {

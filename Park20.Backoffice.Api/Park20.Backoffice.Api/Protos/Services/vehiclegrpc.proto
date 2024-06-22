@@ -11,6 +11,9 @@ service VehicleGrpc {
     rpc AddVehicle (CreateVehicleRequest) returns (VehicleResult);
     rpc ParkCar (ParkingSpotsUpdateRequest) returns (ParkingSpotsUpdateResult);
     rpc LeavePark (ParkingSpotsUpdateRequest) returns (HibridPayment);
+    rpc LeaveParkClientStream (ParkingSpotsUpdateRequest) returns (HibridPayment);
+    rpc LeaveParkServerStream (ParkingSpotsUpdateRequest) returns (HibridPayment);
+    rpc LeaveParkTwoSidedStream (ParkingSpotsUpdateRequest) returns (HibridPayment);
     rpc GetVehicleByLicencePlate (GetVehicleByLicencePlateRequest) returns (VehicleResult);
     rpc GetVehicleListFromUser (GetVehicleListFromUserRequest) returns (VehicleResults);
 }
