@@ -11,6 +11,7 @@ for (file in files) {
     data <- data[data$metric_name == 'http_req_duration',]$metric_value
     assign(file_name, data, envir = .GlobalEnv)
   }else{
+    data <- read_delim(file,delim=";")
     assign(file_name, data$time, envir = .GlobalEnv)
   }
 }
@@ -88,7 +89,7 @@ grpcPartialParks_graphqlPartialParks <- wilcox.test(grpcPartialParks,graphqlPart
 
 # UPDATE PARKING VALUE
 grpcUpdateParkingValue_graphqlUpdateParkingValue <- wilcox.test(grpcUpdateParkingValue,graphqlUpdateParkingValue, paired=FALSE)$p.value
-  
+
 # LEAVE PARK
 grpcLeavePark_graphqlLeavePark <- wilcox.test(grpcLeavePark,graphqlLeavePark, paired=FALSE)$p.value
 grpcLeaveParkClientStream_graphqlLeavePark <- wilcox.test(grpcLeaveParkClientStream,graphqlLeavePark, paired=FALSE)$p.value

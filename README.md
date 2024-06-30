@@ -62,3 +62,8 @@ execute `RunAll.ps1` file.
 ## Additional Information ##
 
 The features and components presented in this system are part of a simulation client developed for LABDSOFT in our Master's program. Please be aware that not all functionalities may be fully implemented or finished. This project serves as a prototype and an academic exercise, showcasing the potential capabilities and design for a park management system. As such, some aspects of the system are conceptual and may require further development for real-world application.
+
+# Thesis
+
+This repository and [Park Management System GraphQL](https://github.com/1181479/Park_Management_System_GraphQL) were part of a thesis development for a master's degree at ISEP.
+[Thesis](./DIMEI_2324.pdf)
